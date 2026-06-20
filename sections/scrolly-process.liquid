@@ -1,0 +1,155 @@
+{%- style -%}
+  .scrolly {
+    position: relative;
+  }
+  .scrolly__sticky {
+    position: sticky;
+    top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .scrolly__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .scrolly__bg-image {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .scrolly__bg-image.is-active { opacity: 1; }
+  .scrolly__bg-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .scrolly__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2;
+  }
+  .scrolly__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 var(--page-gutter);
+    color: #fff;
+  }
+  .scrolly__step {
+    opacity: 0.3;
+    transform: translateY(10px);
+    transition: all 0.6s ease;
+    margin-bottom: var(--space-xl);
+    max-width: 500px;
+  }
+  .scrolly__step.is-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .scrolly__step-number {
+    font-family: var(--font-heading);
+    font-size: var(--text-3xl);
+    color: var(--color-accent-light);
+    line-height: 1;
+    margin-bottom: var(--space-sm);
+    font-weight: 300;
+    opacity: 0.7;
+  }
+  .scrolly__step-title {
+    font-size: var(--text-lg);
+    color: #fff;
+    margin-bottom: var(--space-sm);
+  }
+  .scrolly__step-text {
+    font-size: var(--text-sm);
+    opacity: 0.75;
+    line-height: 1.8;
+  }
+  .scrolly__triggers {
+    position: relative;
+    z-index: 0;
+  }
+  .scrolly__trigger {
+    height: 80vh;
+  }
+  @media (max-width: 749px) {
+    .scrolly__sticky { height: calc(70vh - var(--header-height)); }
+    .scrolly__trigger { height: 60vh; }
+    .scrolly__step { max-width: 100%; }
+  }
+{%- endstyle -%}
+
+<section class="scrolly" data-section-id="{{ section.id }}" data-scrolly>
+  <div class="scrolly__sticky" data-scrolly-sticky>
+    <div class="scrolly__bg">
+      {%- for block in section.blocks -%}
+        <div class="scrolly__bg-image{% if forloop.first %} is-active{% endif %}" data-scrolly-bg="{{ forloop.index0 }}">
+          {%- if block.settings.image != blank -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 1920 }}"
+              alt="{{ block.settings.title | escape }}"
+              loading="lazy"
+            >
+          {%- else -%}
+            <div style="width:100%;height:100%;background:linear-gradient(135deg, #2C1810 0%, #4A3228 {{ forloop.index | times: 25 }}%, #1A1A1A 100%);"></div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="scrolly__overlay"></div>
+    <div class="scrolly__content">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle" style="color:var(--color-accent-light);">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      {%- for block in section.blocks -%}
+        <div class="scrolly__step{% if forloop.first %} is-active{% endif %}" data-scrolly-step="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <div class="scrolly__step-number">0{{ forloop.index }}</div>
+          <h3 class="scrolly__step-title">{{ block.settings.title }}</h3>
+          <p class="scrolly__step-text">{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+  <div class="scrolly__triggers">
+    {%- for block in section.blocks -%}
+      <div class="scrolly__trigger" data-scrolly-trigger="{{ forloop.index0 }}"></div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Scrolly Process",
+  "class": "scrolly-section",
+  "settings": [
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Our Process" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Background Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Design" },
+        { "type": "textarea", "id": "text", "label": "Description", "default": "Every design starts as original artwork, carefully digitized for embroidery." }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Scrolly Process",
+    "blocks": [
+      { "type": "step", "settings": { "title": "Design", "text": "Original artwork created by our in-house design team. Every motif is hand-drawn and digitized for perfect stitch translation." } },
+      { "type": "step", "settings": { "title": "Embroider", "text": "1,000+ stitches per minute with computerized precision. Multi-head machines ensure consistency across every single piece." } },
+      { "type": "step", "settings": { "title": "Quality Check", "text": "Thread density, color accuracy, fabric integrity — each piece is inspected before it earns our label." } },
+      { "type": "step", "settings": { "title": "Deliver", "text": "Carefully packed in premium packaging and shipped to your door. Unwrap your wearable art." } }
+    ]
+  }]
+}
+{% endschema %}

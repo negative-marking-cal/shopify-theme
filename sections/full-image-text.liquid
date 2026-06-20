@@ -1,0 +1,82 @@
+{%- style -%}
+  .full-image-text {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .full-image-text__media {
+    position: absolute; inset: 0;
+  }
+  .full-image-text__media img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .full-image-text__overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.45);
+  }
+  .full-image-text__content {
+    position: relative; z-index: 2;
+    padding: var(--space-4xl) var(--page-gutter);
+    max-width: var(--page-width);
+    margin: 0 auto; width: 100%;
+    color: #fff;
+  }
+  .full-image-text__inner {
+    max-width: 550px;
+  }
+  .full-image-text__title {
+    font-size: var(--text-xl); color: #fff;
+    margin-bottom: var(--space-md);
+  }
+  .full-image-text__text {
+    opacity: 0.8; line-height: 1.8;
+    margin-bottom: var(--space-xl);
+  }
+  @media (max-width: 749px) {
+    .full-image-text { min-height: 50vh; }
+  }
+{%- endstyle -%}
+
+<section class="full-image-text" data-section-id="{{ section.id }}">
+  <div class="full-image-text__media">
+    {%- if section.settings.image != blank -%}
+      <img src="{{ section.settings.image | image_url: width: 1920 }}" alt="{{ section.settings.title | escape }}" loading="lazy">
+    {%- else -%}
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#2C1810,#4A3228,#1A1A1A);"></div>
+    {%- endif -%}
+  </div>
+  <div class="full-image-text__overlay"></div>
+  <div class="full-image-text__content reveal">
+    <div class="full-image-text__inner">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle" style="color:var(--color-accent-light);">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="full-image-text__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="full-image-text__text">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link }}" class="btn btn--white">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Full Image + Text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background Image" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Our Promise" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Built to Last, Made to Impress" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Every stitch is a promise of quality. Every garment is made to withstand time while keeping its beauty intact. That's the standard we hold ourselves to.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button Label", "default": "Shop Now" },
+    { "type": "url", "id": "button_link", "label": "Button Link" }
+  ],
+  "presets": [{ "name": "Full Image + Text" }]
+}
+{% endschema %}

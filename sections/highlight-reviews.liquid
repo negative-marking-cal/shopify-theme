@@ -1,0 +1,112 @@
+{%- style -%}
+  .highlight-reviews {
+    padding: var(--space-4xl) 0;
+  }
+  .highlight-reviews__header {
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+  }
+  .highlight-reviews__list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+  }
+  .highlight-review {
+    text-align: center;
+    opacity: 0.2;
+    transform: scale(0.95);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .highlight-review.is-highlighted {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .highlight-review__stars {
+    color: var(--color-accent);
+    margin-bottom: var(--space-md);
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+  }
+  .highlight-review__text {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    line-height: 1.4;
+    margin-bottom: var(--space-lg);
+    font-weight: 300;
+  }
+  .highlight-review__author {
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-text-light);
+  }
+  .highlight-review__author span {
+    color: var(--color-accent);
+  }
+  @media (max-width: 749px) {
+    .highlight-review__text { font-size: var(--text-lg); }
+  }
+{%- endstyle -%}
+
+<section class="highlight-reviews" data-section-id="{{ section.id }}" data-highlight-reviews>
+  <div class="container">
+    <div class="highlight-reviews__header reveal">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="section-title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+    </div>
+
+    <div class="highlight-reviews__list">
+      {%- for block in section.blocks -%}
+        <div class="highlight-review" data-highlight-item {{ block.shopify_attributes }}>
+          <div class="highlight-review__stars">
+            {%- for i in (1..5) -%}&#9733;{%- endfor -%}
+          </div>
+          <p class="highlight-review__text">"{{ block.settings.text }}"</p>
+          <p class="highlight-review__author">
+            {{ block.settings.author }}
+            {%- if block.settings.product != blank -%}
+              <span> — {{ block.settings.product }}</span>
+            {%- endif -%}
+          </p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Highlight Reviews",
+  "class": "highlight-reviews-section",
+  "settings": [
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Love Letters" },
+    { "type": "text", "id": "title", "label": "Title", "default": "What People Are Saying" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "text", "label": "Review Text", "default": "The quality is unmatched." },
+        { "type": "text", "id": "author", "label": "Author", "default": "Customer Name" },
+        { "type": "text", "id": "product", "label": "Product (optional)" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Highlight Reviews",
+    "blocks": [
+      { "type": "review", "settings": { "text": "The embroidery detail is insane. I've never felt this level of quality in a t-shirt before. This isn't fast fashion — it's wearable art.", "author": "Rahul S.", "product": "Tiger Embroidered Oversized Tee" } },
+      { "type": "review", "settings": { "text": "Ordered for my boyfriend and he won't stop wearing it. The stitching holds up wash after wash. We're both addicted now.", "author": "Priya M.", "product": "Dragon Art Hoodie" } },
+      { "type": "review", "settings": { "text": "Finally a brand that takes embroidery seriously. The 240GSM cotton, the oversized fit, the attention to detail — chef's kiss.", "author": "Arjun K.", "product": "Lotus Stitch Polo" } }
+    ]
+  }]
+}
+{% endschema %}

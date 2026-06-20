@@ -2,149 +2,108 @@
   "sections": {
     "hero_slider": {
       "type": "hero-slider",
-      "settings": {
-        "autoplay_speed": 5
-      },
+      "settings": { "autoplay_speed": 5 },
       "blocks": {
-        "slide_1": {
-          "type": "slide",
-          "settings": {
-            "subtitle": "New Collection 2025",
-            "title": "Where Art Meets Thread",
-            "description": "Premium computerized embroidery on handpicked fabrics. Each piece is a wearable work of art.",
-            "button_label": "Shop Collection",
-            "button_label_2": "Our Story"
-          }
-        },
-        "slide_2": {
-          "type": "slide",
-          "settings": {
-            "subtitle": "Crafted With Precision",
-            "title": "1,000 Stitches Per Minute",
-            "description": "Computerized precision meets artisan design. Experience embroidery like never before.",
-            "button_label": "Explore T-Shirts"
-          }
-        },
-        "slide_3": {
-          "type": "slide",
-          "settings": {
-            "subtitle": "Limited Edition",
-            "title": "The Art Collection",
-            "description": "Hand-drawn designs transformed into thread. Only 50 pieces per design.",
-            "button_label": "Shop Limited",
-            "button_label_2": "View Lookbook"
-          }
-        }
+        "slide_1": { "type": "slide", "settings": { "title": "Where Art Meets Thread", "description": "Premium computerized embroidery on handpicked fabrics. Each piece is a wearable work of art.", "button_label": "Shop Collection" } },
+        "slide_2": { "type": "slide", "settings": { "title": "1,000 Stitches Per Minute", "description": "Computerized precision meets artisan design. Experience embroidery like never before.", "button_label": "Explore" } },
+        "slide_3": { "type": "slide", "settings": { "title": "The Art Collection", "description": "Hand-drawn designs transformed into thread. Only 50 pieces per design.", "button_label": "Shop Limited" } }
       },
       "block_order": ["slide_1", "slide_2", "slide_3"]
     },
     "featured_collection": {
       "type": "featured-collection",
-      "settings": {
-        "subtitle": "New Arrivals",
-        "title": "Just Dropped",
-        "products_to_show": 4,
-        "columns": "4",
-        "show_vendor": false,
-        "show_view_all": true
-      }
+      "settings": { "subtitle": "New Arrivals", "title": "Just Dropped", "products_to_show": 4, "columns": "4", "show_vendor": false, "show_view_all": true }
     },
     "brand_story": {
-      "type": "brand-story",
-      "settings": {
-        "subtitle": "Our Craft",
-        "title": "Precision in Every Thread",
-        "text": "<p>We combine cutting-edge computerized embroidery technology with artisan design sensibility. Each piece undergoes meticulous quality checks to ensure the stitching is flawless and the fabric feels premium against your skin.</p><p>From concept to finished garment, every step is handled with care — because we believe what you wear should be as intentional as how you live.</p>",
-        "button_label": "Learn More",
-        "reverse_layout": false
-      }
+      "type": "image-with-text",
+      "settings": { "subtitle": "Our Craft", "title": "Precision in Every Thread", "text": "<p>We combine cutting-edge computerized embroidery with artisan design sensibility. Each piece undergoes meticulous quality checks to ensure flawless stitching and premium fabric feel.</p>", "button_label": "Learn More", "image_position": "left" }
     },
-    "process": {
-      "type": "process",
-      "settings": {
-        "subtitle": "Our Process",
-        "title": "From Concept to Creation",
-        "description": "Every piece goes through a meticulous 4-step process to ensure perfection."
-      },
+    "scrolly_process": {
+      "type": "scrolly-process",
+      "settings": { "subtitle": "Our Process" },
       "blocks": {
-        "s1": { "type": "step", "settings": { "icon": "design", "title": "Design", "text": "Original artwork created by our in-house design team, digitized for embroidery perfection." } },
-        "s2": { "type": "step", "settings": { "icon": "stitch", "title": "Embroider", "text": "1,000+ stitches per minute with computerized precision. Every thread placed intentionally." } },
-        "s3": { "type": "step", "settings": { "icon": "quality", "title": "Quality Check", "text": "Each piece inspected for stitch density, color accuracy, and fabric integrity before packing." } },
-        "s4": { "type": "step", "settings": { "icon": "ship", "title": "Deliver", "text": "Carefully packed and shipped to your doorstep. Unwrap your wearable art." } }
+        "s1": { "type": "step", "settings": { "title": "Design", "text": "Original artwork created by our in-house design team. Every motif is hand-drawn and digitized for perfect stitch translation." } },
+        "s2": { "type": "step", "settings": { "title": "Embroider", "text": "1,000+ stitches per minute with computerized precision. Multi-head machines ensure consistency across every single piece." } },
+        "s3": { "type": "step", "settings": { "title": "Quality Check", "text": "Thread density, color accuracy, fabric integrity — each piece is inspected before it earns our label." } },
+        "s4": { "type": "step", "settings": { "title": "Deliver", "text": "Carefully packed in premium packaging and shipped to your door. Unwrap your wearable art." } }
       },
       "block_order": ["s1", "s2", "s3", "s4"]
     },
     "best_sellers": {
       "type": "featured-collection",
-      "settings": {
-        "subtitle": "Most Loved",
-        "title": "Best Sellers",
-        "products_to_show": 4,
-        "columns": "4",
-        "show_vendor": false,
-        "show_view_all": true
-      }
+      "settings": { "subtitle": "Most Loved", "title": "Best Sellers", "products_to_show": 4, "columns": "4", "show_vendor": false, "show_view_all": true }
     },
     "all_products": {
       "type": "all-products",
-      "settings": {
-        "subtitle": "Full Range",
-        "title": "All Products",
-        "description": "Every piece in our collection — premium embroidery, premium fabric, premium feel.",
-        "products_to_show": 8,
-        "columns": "4",
-        "show_vendor": false,
-        "show_view_all": true,
-        "button_label": "View All Products"
-      }
+      "settings": { "subtitle": "Full Range", "title": "All Products", "description": "Every piece in our collection — premium embroidery, premium fabric, premium feel.", "products_to_show": 8, "columns": "4", "show_vendor": false, "show_view_all": true, "button_label": "View All Products" }
+    },
+    "full_image": {
+      "type": "full-image-text",
+      "settings": { "subtitle": "Our Promise", "title": "Built to Last, Made to Impress", "text": "<p>Every stitch is a promise of quality. Every garment is made to withstand time while keeping its beauty intact. That's the standard we hold ourselves to.</p>", "button_label": "Shop Now" }
     },
     "marquee": {
       "type": "marquee",
-      "settings": {
-        "dark_bg": true
-      },
+      "settings": { "dark_bg": true },
       "blocks": {
         "m1": { "type": "text", "settings": { "text": "Computerized Embroidery" } },
         "m2": { "type": "text", "settings": { "text": "Premium 240GSM Cotton" } },
         "m3": { "type": "text", "settings": { "text": "Art in Every Stitch" } },
         "m4": { "type": "text", "settings": { "text": "Oversized Fits" } },
-        "m5": { "type": "text", "settings": { "text": "Made With Precision" } },
-        "m6": { "type": "text", "settings": { "text": "Limited Edition Drops" } }
+        "m5": { "type": "text", "settings": { "text": "Limited Edition Drops" } }
       },
-      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6"]
+      "block_order": ["m1", "m2", "m3", "m4", "m5"]
     },
-    "testimonials": {
-      "type": "testimonials",
-      "settings": {
-        "subtitle": "Reviews",
-        "title": "What Our Customers Say"
-      },
+    "highlight_reviews": {
+      "type": "highlight-reviews",
+      "settings": { "subtitle": "Love Letters", "title": "What People Are Saying" },
       "blocks": {
-        "r1": { "type": "testimonial", "settings": { "rating": 5, "text": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee. It's not just a t-shirt, it's art you can wear.", "author": "Rahul S." } },
-        "r2": { "type": "testimonial", "settings": { "rating": 5, "text": "Ordered two oversized tees. The stitching detail is next level and the fabric feels premium. 240 GSM cotton that actually lasts. Worth every rupee.", "author": "Priya M." } },
-        "r3": { "type": "testimonial", "settings": { "rating": 5, "text": "Finally a brand that does embroidery right. Clean designs, great fit, fast delivery. Already ordered my third piece. This is my go-to now.", "author": "Arjun K." } }
+        "r1": { "type": "review", "settings": { "text": "The embroidery detail is insane. I've never felt this level of quality in a t-shirt before. This isn't fast fashion — it's wearable art.", "author": "Rahul S.", "product": "Tiger Embroidered Oversized Tee" } },
+        "r2": { "type": "review", "settings": { "text": "Ordered for my boyfriend and he won't stop wearing it. The stitching holds up wash after wash. We're both addicted now.", "author": "Priya M.", "product": "Dragon Art Hoodie" } },
+        "r3": { "type": "review", "settings": { "text": "Finally a brand that takes embroidery seriously. The 240GSM cotton, the oversized fit, the attention to detail — perfection.", "author": "Arjun K.", "product": "Lotus Stitch Polo" } }
       },
       "block_order": ["r1", "r2", "r3"]
     },
+    "image_reviews": {
+      "type": "image-reviews",
+      "settings": { "subtitle": "#StitchAndCo", "title": "Worn by You" },
+      "blocks": {
+        "ir1": { "type": "review", "settings": { "text": "Obsessed with the detail!", "author": "@rahul.style" } },
+        "ir2": { "type": "review", "settings": { "text": "Best tee I own, period.", "author": "@priya.fits" } },
+        "ir3": { "type": "review", "settings": { "text": "Embroidery on another level", "author": "@arjun.k" } },
+        "ir4": { "type": "review", "settings": { "text": "Compliments every time", "author": "@sneha.m" } }
+      },
+      "block_order": ["ir1", "ir2", "ir3", "ir4"]
+    },
+    "faq": {
+      "type": "faq",
+      "settings": { "subtitle": "Got Questions?", "title": "Frequently Asked Questions" },
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "What is computerized embroidery?", "answer": "<p>Computerized embroidery uses programmable machines to stitch designs onto fabric with extreme precision — 1,000+ stitches per minute. The result is durable, detailed, and consistent artwork.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "What fabric do you use?", "answer": "<p>Premium 240GSM 100% combed cotton for tees and 350GSM fleece for hoodies. Pre-shrunk and tested for colorfastness.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "How should I care for embroidered garments?", "answer": "<p>Machine wash cold inside-out. Tumble dry low. Do not iron over embroidery. Do not bleach.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "Do you offer returns?", "answer": "<p>Yes! Hassle-free returns within 7 days. Free size exchanges if tags are intact.</p>" } },
+        "q5": { "type": "question", "settings": { "question": "How long does shipping take?", "answer": "<p>Standard: 5-7 business days. Express: 2-3 days. Free shipping on orders above ₹999.</p>" } },
+        "q6": { "type": "question", "settings": { "question": "Are designs limited edition?", "answer": "<p>Yes — most designs are limited to 50-100 pieces. Follow us on Instagram for drop alerts.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6"]
+    },
     "newsletter": {
       "type": "newsletter",
-      "settings": {
-        "title": "Join the Thread",
-        "text": "Subscribe for early access to new drops, exclusive offers, and behind-the-scenes looks at our embroidery process.",
-        "placeholder": "Your email address",
-        "button_label": "Subscribe"
-      }
+      "settings": { "title": "Join the Thread", "text": "Subscribe for early access to new drops, exclusive offers, and behind-the-scenes looks at our embroidery process.", "placeholder": "Your email address", "button_label": "Subscribe" }
     }
   },
   "order": [
     "hero_slider",
     "featured_collection",
     "brand_story",
-    "process",
+    "scrolly_process",
     "best_sellers",
     "all_products",
+    "full_image",
     "marquee",
-    "testimonials",
+    "highlight_reviews",
+    "image_reviews",
+    "faq",
     "newsletter"
   ]
 }

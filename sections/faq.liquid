@@ -1,0 +1,82 @@
+{%- style -%}
+  .faq { padding: var(--space-3xl) 0; }
+  .faq__header { text-align: center; margin-bottom: var(--space-2xl); }
+  .faq__list { max-width: 800px; margin: 0 auto; }
+  .faq__item { border-bottom: 1px solid var(--color-border); }
+  .faq__question {
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+    padding: var(--space-lg) 0; font-size: var(--text-md); font-weight: 500;
+    text-align: left; gap: var(--space-md); cursor: pointer;
+  }
+  .faq__icon {
+    width: 24px; height: 24px; flex-shrink: 0; position: relative;
+  }
+  .faq__icon::before, .faq__icon::after {
+    content: ''; position: absolute; background: var(--color-text);
+    left: 50%; top: 50%; transform: translate(-50%,-50%); transition: 0.3s ease;
+  }
+  .faq__icon::before { width: 14px; height: 1.5px; }
+  .faq__icon::after { width: 1.5px; height: 14px; }
+  .faq__item.is-open .faq__icon::after { transform: translate(-50%,-50%) rotate(90deg); opacity:0; }
+  .faq__answer {
+    max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+    font-size: var(--text-sm); line-height: 1.8; color: var(--color-text-light);
+  }
+  .faq__item.is-open .faq__answer { max-height: 500px; padding-bottom: var(--space-lg); }
+{%- endstyle -%}
+
+<section class="faq" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="faq__header reveal">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="section-title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+    </div>
+    <div class="faq__list">
+      {%- for block in section.blocks -%}
+        <div class="faq__item reveal" data-faq-item {{ block.shopify_attributes }}>
+          <button class="faq__question" data-faq-toggle aria-expanded="false">
+            <span>{{ block.settings.question }}</span>
+            <span class="faq__icon"></span>
+          </button>
+          <div class="faq__answer">{{ block.settings.answer }}</div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "class": "faq-section",
+  "settings": [
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Got Questions?" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Frequently Asked Questions" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "What is computerized embroidery?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Computerized embroidery uses programmable machines to stitch designs with extreme precision.</p>" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "FAQ",
+    "blocks": [
+      { "type": "question", "settings": { "question": "What is computerized embroidery?", "answer": "<p>Computerized embroidery uses programmable machines to stitch designs onto fabric with extreme precision — 1,000+ stitches per minute. The result is artwork that's durable, detailed, and consistent across every piece.</p>" } },
+      { "type": "question", "settings": { "question": "What fabric do you use?", "answer": "<p>We use premium 240GSM 100% combed cotton for tees and 350GSM fleece for hoodies. Every fabric is pre-shrunk and tested for colorfastness.</p>" } },
+      { "type": "question", "settings": { "question": "How should I care for embroidered garments?", "answer": "<p>Machine wash cold inside-out with like colors. Tumble dry low or hang dry. Do not iron directly over embroidery. Do not bleach.</p>" } },
+      { "type": "question", "settings": { "question": "Do you offer returns?", "answer": "<p>Yes! Hassle-free returns within 7 days of delivery. Free size exchanges if tags are intact and garment is unworn.</p>" } },
+      { "type": "question", "settings": { "question": "How long does shipping take?", "answer": "<p>Standard: 5-7 business days. Express: 2-3 days. Free shipping on orders above ₹999.</p>" } },
+      { "type": "question", "settings": { "question": "Are designs limited edition?", "answer": "<p>Yes — most designs are limited to 50-100 pieces. Once sold out, they may not return. Follow us on Instagram for drop alerts.</p>" } }
+    ]
+  }]
+}
+{% endschema %}

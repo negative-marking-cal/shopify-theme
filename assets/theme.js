@@ -549,10 +549,77 @@
     new AnnouncementMarquee();
   }
 
-  // Run on DOM ready
+  // === FAQ ACCORDION ===
+  class FaqAccordion {
+    constructor() {
+      const items = $$('[data-faq-item]');
+      items.forEach(item => {
+        const btn = $('[data-faq-toggle]', item);
+        btn?.addEventListener('click', () => {
+          const isOpen = item.classList.contains('is-open');
+          // Close all
+          items.forEach(i => i.classList.remove('is-open'));
+          // Open clicked (if was closed)
+          if (!isOpen) item.classList.add('is-open');
+        });
+      });
+    }
+  }
+
+  // === SCROLLY PROCESS ===
+  class ScrollyProcess {
+    constructor() {
+      this.section = $('[data-scrolly]');
+      if (!this.section) return;
+      this.triggers = $$('[data-scrolly-trigger]', this.section);
+      this.steps = $$('[data-scrolly-step]', this.section);
+      this.bgs = $$('[data-scrolly-bg]', this.section);
+      if (!this.triggers.length) return;
+      this.init();
+    }
+
+    init() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = parseInt(entry.target.dataset.scrollyTrigger);
+            this.activate(idx);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      this.triggers.forEach(t => observer.observe(t));
+    }
+
+    activate(idx) {
+      this.steps.forEach((s, i) => s.classList.toggle('is-active', i === idx));
+      this.bgs.forEach((b, i) => b.classList.toggle('is-active', i === idx));
+    }
+  }
+
+  // === HIGHLIGHT REVIEWS ON SCROLL ===
+  class HighlightReviews {
+    constructor() {
+      this.items = $$('[data-highlight-item]');
+      if (!this.items.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          entry.target.classList.toggle('is-highlighted', entry.isIntersecting);
+        });
+      }, { threshold: 0.6, rootMargin: '-10% 0px -30% 0px' });
+
+      this.items.forEach(item => observer.observe(item));
+    }
+  }
+
+  // === INITIALIZE EVERYTHING ===
   function initAll() {
     init();
     new HeroSlider();
+    new FaqAccordion();
+    new ScrollyProcess();
+    new HighlightReviews();
   }
 
   if (document.readyState === 'loading') {
