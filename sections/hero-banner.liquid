@@ -1,14 +1,26 @@
 {%- style -%}
-  #section-{{ section.id }} .hero__overlay {
-    background: {{ section.settings.overlay_color }};
+  #Hero-{{ section.id }} {
+    --hero-height: {{ section.settings.height }};
+  }
+  #Hero-{{ section.id }} .hero__overlay {
     opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
   }
 {%- endstyle -%}
 
-<section id="section-{{ section.id }}" class="hero hero--{{ section.settings.text_color_scheme }}" data-section-id="{{ section.id }}">
-  <div class="hero__media">
+<section id="Hero-{{ section.id }}" class="hero hero--{{ section.settings.height_preset }}" data-section-id="{{ section.id }}">
+  <div class="hero__media{% if section.settings.enable_parallax %} hero__media--parallax{% endif %}" data-parallax>
     {%- if section.settings.video != blank -%}
-      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true }}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, class: 'hero__video' }}
+    {%- elsif section.settings.video_url != blank -%}
+      {%- if section.settings.video_url.type == 'youtube' -%}
+        <iframe
+          src="https://www.youtube.com/embed/{{ section.settings.video_url.id }}?autoplay=1&mute=1&loop=1&playlist={{ section.settings.video_url.id }}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+          style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;"
+          loading="lazy"
+        ></iframe>
+      {%- endif -%}
     {%- elsif section.settings.image != blank -%}
       <img
         src="{{ section.settings.image | image_url: width: 1920 }}"
@@ -19,52 +31,81 @@
           {{ section.settings.image | image_url: width: 1920 }} 1920w
         "
         sizes="100vw"
-        alt="{{ section.settings.image.alt | escape | default: section.settings.title }}"
+        alt="{{ section.settings.image.alt | escape | default: section.settings.title | escape }}"
         width="{{ section.settings.image.width }}"
         height="{{ section.settings.image.height }}"
         loading="eager"
         fetchpriority="high"
       >
     {%- else -%}
-      {{ 'lifestyle-1' | placeholder_svg_tag: 'hero__placeholder' }}
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg, #2C2C2C 0%, #4a3728 50%, #1a1a1a 100%);"></div>
+    {%- endif -%}
+
+    {%- if section.settings.image_mobile != blank -%}
+      <img
+        class="hero__media-mobile"
+        src="{{ section.settings.image_mobile | image_url: width: 750 }}"
+        srcset="
+          {{ section.settings.image_mobile | image_url: width: 375 }} 375w,
+          {{ section.settings.image_mobile | image_url: width: 550 }} 550w,
+          {{ section.settings.image_mobile | image_url: width: 750 }} 750w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.image_mobile.alt | escape | default: section.settings.title | escape }}"
+        width="{{ section.settings.image_mobile.width }}"
+        height="{{ section.settings.image_mobile.height }}"
+        loading="eager"
+        fetchpriority="high"
+      >
     {%- endif -%}
   </div>
 
   <div class="hero__overlay"></div>
 
-  <div class="hero__content animate-in">
+  <div class="hero__content">
     {%- if section.settings.subtitle != blank -%}
-      <p class="hero__subtitle">{{ section.settings.subtitle }}</p>
+      <p class="hero__subtitle reveal">{{ section.settings.subtitle }}</p>
     {%- endif -%}
 
     {%- if section.settings.title != blank -%}
-      <h1 class="hero__title">{{ section.settings.title }}</h1>
+      <h1 class="hero__title reveal reveal--delay-1">{{ section.settings.title }}</h1>
     {%- endif -%}
 
     {%- if section.settings.description != blank -%}
-      <p class="hero__description">{{ section.settings.description }}</p>
+      <p class="hero__description reveal reveal--delay-2">{{ section.settings.description }}</p>
     {%- endif -%}
 
-    <div class="hero__actions">
-      {%- if section.settings.button_label != blank -%}
-        <a href="{{ section.settings.button_link }}" class="btn btn--primary">
-          {{ section.settings.button_label }}
-        </a>
-      {%- endif -%}
+    {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
+      <div class="hero__actions reveal reveal--delay-3">
+        {%- if section.settings.button_label != blank -%}
+          <a href="{{ section.settings.button_link }}" class="btn btn--white">
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
 
-      {%- if section.settings.button_label_2 != blank -%}
-        <a href="{{ section.settings.button_link_2 }}" class="btn btn--secondary" style="border-color:currentColor;">
-          {{ section.settings.button_label_2 }}
-        </a>
-      {%- endif -%}
-    </div>
+        {%- if section.settings.button_label_2 != blank -%}
+          <a href="{{ section.settings.button_link_2 }}" class="btn btn--outline-white">
+            {{ section.settings.button_label_2 }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
   </div>
+
+  {%- if section.settings.show_scroll_indicator -%}
+    <div class="hero__scroll" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 5v14M19 12l-7 7-7-7"/>
+      </svg>
+    </div>
+  {%- endif -%}
 </section>
 
 {% schema %}
 {
   "name": "Hero Banner",
   "class": "hero-section",
+  "tag": "section",
   "settings": [
     {
       "type": "header",
@@ -76,9 +117,26 @@
       "label": "Background Image"
     },
     {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile Image (optional)"
+    },
+    {
       "type": "video",
       "id": "video",
-      "label": "Background Video (optional)"
+      "label": "Background Video (Shopify hosted)"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Background Video URL (YouTube/Vimeo)",
+      "accept": ["youtube", "vimeo"]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": "Enable Parallax Effect",
+      "default": true
     },
     {
       "type": "header",
@@ -91,7 +149,7 @@
       "default": "Crafted With Precision"
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "title",
       "label": "Title",
       "default": "Where Art Meets Thread"
@@ -105,54 +163,55 @@
     {
       "type": "text",
       "id": "button_label",
-      "label": "Button Label",
+      "label": "Primary Button Label",
       "default": "Shop Collection"
     },
     {
       "type": "url",
       "id": "button_link",
-      "label": "Button Link"
+      "label": "Primary Button Link"
     },
     {
       "type": "text",
       "id": "button_label_2",
-      "label": "Second Button Label",
+      "label": "Secondary Button Label",
       "default": "Our Story"
     },
     {
       "type": "url",
       "id": "button_link_2",
-      "label": "Second Button Link"
+      "label": "Secondary Button Link"
     },
     {
       "type": "header",
-      "content": "Overlay"
+      "content": "Layout"
     },
     {
-      "type": "color",
-      "id": "overlay_color",
-      "label": "Overlay Color",
-      "default": "#000000"
+      "type": "select",
+      "id": "height_preset",
+      "label": "Height",
+      "options": [
+        { "value": "full", "label": "Full Screen" },
+        { "value": "medium", "label": "Medium (80vh)" },
+        { "value": "small", "label": "Small (60vh)" }
+      ],
+      "default": "full"
     },
     {
       "type": "range",
       "id": "overlay_opacity",
-      "label": "Overlay Opacity",
+      "label": "Overlay Darkness",
       "min": 0,
       "max": 80,
       "step": 5,
       "unit": "%",
-      "default": 30
+      "default": 40
     },
     {
-      "type": "select",
-      "id": "text_color_scheme",
-      "label": "Text Color",
-      "options": [
-        { "value": "light", "label": "White Text" },
-        { "value": "dark", "label": "Dark Text" }
-      ],
-      "default": "light"
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show Scroll Down Arrow",
+      "default": true
     }
   ],
   "presets": [

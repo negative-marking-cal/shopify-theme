@@ -1,17 +1,18 @@
-<section class="section" data-section-id="{{ section.id }}">
+<section class="section section--alt" data-section-id="{{ section.id }}">
   <div class="container">
-    <div class="testimonials__header animate-in">
+    <div class="testimonials__header reveal">
       {%- if section.settings.subtitle != blank -%}
-        <p class="featured-collection__subtitle">{{ section.settings.subtitle }}</p>
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
       {%- endif -%}
       {%- if section.settings.title != blank -%}
-        <h2>{{ section.settings.title }}</h2>
+        <h2 class="section-title">{{ section.settings.title }}</h2>
       {%- endif -%}
     </div>
 
-    <div class="testimonials__grid">
+    <div class="testimonials__grid stagger-children">
       {%- for block in section.blocks -%}
-        <div class="testimonial-card animate-in" style="transition-delay: {{ forloop.index | times: 0.1 }}s;" {{ block.shopify_attributes }}>
+        <div class="testimonial-card reveal" {{ block.shopify_attributes }}>
+          <span class="testimonial-card__quote">"</span>
           <div class="testimonial-card__stars">
             {%- for i in (1..block.settings.rating) -%}&#9733;{%- endfor -%}
           </div>
@@ -19,7 +20,7 @@
             <p class="testimonial-card__text">"{{ block.settings.text }}"</p>
           {%- endif -%}
           {%- if block.settings.author != blank -%}
-            <p class="testimonial-card__author">— {{ block.settings.author }}</p>
+            <p class="testimonial-card__author">{{ block.settings.author }}</p>
           {%- endif -%}
         </div>
       {%- endfor -%}
@@ -32,78 +33,27 @@
   "name": "Testimonials",
   "class": "testimonials-section",
   "settings": [
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "Reviews"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "What Our Customers Say"
-    }
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Reviews" },
+    { "type": "text", "id": "title", "label": "Title", "default": "What Our Customers Say" }
   ],
   "blocks": [
     {
       "type": "testimonial",
       "name": "Testimonial",
       "settings": [
-        {
-          "type": "range",
-          "id": "rating",
-          "label": "Star Rating",
-          "min": 1,
-          "max": 5,
-          "step": 1,
-          "default": 5
-        },
-        {
-          "type": "textarea",
-          "id": "text",
-          "label": "Review Text",
-          "default": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee. Definitely ordering more."
-        },
-        {
-          "type": "text",
-          "id": "author",
-          "label": "Author Name",
-          "default": "Rahul S."
-        }
+        { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "text", "label": "Review Text", "default": "The quality is incredible." },
+        { "type": "text", "id": "author", "label": "Author", "default": "Happy Customer" }
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Testimonials",
-      "blocks": [
-        {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee.",
-            "author": "Rahul S."
-          }
-        },
-        {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "Ordered two oversized tees. The stitching detail is next level and the fabric feels premium. Worth every rupee.",
-            "author": "Priya M."
-          }
-        },
-        {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "Finally a brand that does embroidery right. Clean designs, great fit, and fast delivery. My new go-to.",
-            "author": "Arjun K."
-          }
-        }
-      ]
-    }
-  ]
+  "presets": [{
+    "name": "Testimonials",
+    "blocks": [
+      { "type": "testimonial", "settings": { "rating": 5, "text": "The embroidery quality is insane. You can feel the craftsmanship.", "author": "Rahul S." } },
+      { "type": "testimonial", "settings": { "rating": 5, "text": "Ordered two oversized tees. Stitching is next level. Worth every rupee.", "author": "Priya M." } },
+      { "type": "testimonial", "settings": { "rating": 5, "text": "Finally a brand that does embroidery right. Clean, great fit, fast delivery.", "author": "Arjun K." } }
+    ]
+  }]
 }
 {% endschema %}

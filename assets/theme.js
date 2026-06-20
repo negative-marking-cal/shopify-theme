@@ -1,80 +1,119 @@
 /**
- * STITCH & CO - Theme JavaScript
- * Minimal, performant, no jQuery dependency
+ * STITCH & CO — Premium Theme JavaScript
+ * Zero dependencies, performant, accessible
  */
 
 (function() {
   'use strict';
 
-  // === UTILITY HELPERS ===
+  // === UTILITIES ===
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
-  function debounce(fn, delay = 250) {
+  function debounce(fn, delay = 150) {
     let timer;
+    return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+  }
+
+  function throttle(fn, limit = 100) {
+    let last = 0;
     return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn(...args), delay);
+      const now = Date.now();
+      if (now - last >= limit) { last = now; fn(...args); }
     };
+  }
+
+  function formatMoney(cents) {
+    const format = window.theme?.moneyFormat || '₹{{amount}}';
+    const amount = (cents / 100).toFixed(2);
+    return format
+      .replace('{{amount}}', amount)
+      .replace('{{amount_no_decimals}}', Math.round(cents / 100))
+      .replace('{{amount_with_comma_separator}}', amount.replace('.', ','))
+      .replace('{{amount_with_apostrophe_separator}}', amount.replace('.', "'"));
+  }
+
+  // === SCROLL REVEAL ANIMATIONS ===
+  class RevealOnScroll {
+    constructor() {
+      this.elements = $$('.reveal, .img-reveal');
+      if (!this.elements.length || !('IntersectionObserver' in window)) {
+        this.elements.forEach(el => { el.classList.add('is-visible'); });
+        return;
+      }
+      this.init();
+    }
+
+    init() {
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            this.observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.08,
+        rootMargin: '0px 0px -60px 0px'
+      });
+
+      this.elements.forEach(el => this.observer.observe(el));
+    }
+  }
+
+  // === STICKY HEADER ===
+  class StickyHeader {
+    constructor() {
+      this.header = $('[data-header]');
+      if (!this.header) return;
+      this.scrolled = false;
+      this.init();
+    }
+
+    init() {
+      const check = () => {
+        const scrolled = window.scrollY > 50;
+        if (scrolled !== this.scrolled) {
+          this.scrolled = scrolled;
+          this.header.classList.toggle('is-scrolled', scrolled);
+        }
+      };
+      window.addEventListener('scroll', throttle(check, 50), { passive: true });
+      check();
+    }
   }
 
   // === MOBILE MENU ===
   class MobileMenu {
     constructor() {
-      this.menu = $('[data-mobile-nav]');
-      this.openBtn = $('[data-menu-open]');
-      this.closeBtn = $('[data-menu-close]');
+      this.nav = $('[data-mobile-nav]');
       this.overlay = $('[data-overlay]');
-      if (!this.menu) return;
-      this.bind();
+      if (!this.nav) return;
+      this.init();
     }
 
-    bind() {
-      this.openBtn?.addEventListener('click', () => this.open());
-      this.closeBtn?.addEventListener('click', () => this.close());
+    init() {
+      $$('[data-menu-open]').forEach(btn => btn.addEventListener('click', () => this.open()));
+      $$('[data-menu-close]').forEach(btn => btn.addEventListener('click', () => this.close()));
       this.overlay?.addEventListener('click', () => this.close());
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') this.close();
-      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.close(); });
     }
 
     open() {
-      this.menu.classList.add('is-open');
+      this.nav.classList.add('is-open');
       this.overlay?.classList.add('is-active');
       document.body.classList.add('no-scroll');
-      this.menu.setAttribute('aria-hidden', 'false');
+      this.nav.setAttribute('aria-hidden', 'false');
+      // Focus first link
+      const firstLink = $('a', this.nav);
+      if (firstLink) setTimeout(() => firstLink.focus(), 100);
     }
 
     close() {
-      this.menu.classList.remove('is-open');
+      this.nav.classList.remove('is-open');
       this.overlay?.classList.remove('is-active');
       document.body.classList.remove('no-scroll');
-      this.menu.setAttribute('aria-hidden', 'true');
-    }
-  }
-
-
-  // === HEADER SCROLL BEHAVIOR ===
-  class StickyHeader {
-    constructor() {
-      this.header = $('[data-header]');
-      if (!this.header) return;
-      this.lastScroll = 0;
-      this.bind();
-    }
-
-    bind() {
-      window.addEventListener('scroll', debounce(() => this.onScroll(), 10));
-    }
-
-    onScroll() {
-      const scroll = window.pageYOffset;
-      if (scroll > 50) {
-        this.header.classList.add('header--shadow');
-      } else {
-        this.header.classList.remove('header--shadow');
-      }
-      this.lastScroll = scroll;
+      this.nav.setAttribute('aria-hidden', 'true');
     }
   }
 
@@ -84,45 +123,34 @@
       this.drawer = $('[data-cart-drawer]');
       this.overlay = $('[data-overlay]');
       if (!this.drawer) return;
-      this.bind();
+      this.init();
     }
 
-    bind() {
+    init() {
       $$('[data-cart-drawer-open]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          this.open();
-        });
+        btn.addEventListener('click', (e) => { e.preventDefault(); this.open(); });
       });
-
       $$('[data-cart-drawer-close]').forEach(btn => {
         btn.addEventListener('click', () => this.close());
       });
-
       this.overlay?.addEventListener('click', () => this.close());
-
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && this.isOpen()) this.close();
       });
 
-      // Quantity buttons
+      // Quantity & remove
       $$('[data-qty-minus]', this.drawer).forEach(btn => {
-        btn.addEventListener('click', () => this.updateQty(btn.dataset.key, -1));
+        btn.addEventListener('click', () => this.changeQty(btn.dataset.key, -1));
       });
-
       $$('[data-qty-plus]', this.drawer).forEach(btn => {
-        btn.addEventListener('click', () => this.updateQty(btn.dataset.key, 1));
+        btn.addEventListener('click', () => this.changeQty(btn.dataset.key, 1));
       });
-
-      // Remove buttons
-      $$('[data-cart-remove]').forEach(btn => {
+      $$('[data-cart-remove]', this.drawer).forEach(btn => {
         btn.addEventListener('click', () => this.removeItem(btn.dataset.cartRemove));
       });
     }
 
-    isOpen() {
-      return this.drawer.classList.contains('is-open');
-    }
+    isOpen() { return this.drawer.classList.contains('is-open'); }
 
     open() {
       this.drawer.classList.add('is-open');
@@ -138,81 +166,116 @@
       this.drawer.setAttribute('aria-hidden', 'true');
     }
 
-    async updateQty(key, change) {
+    async changeQty(key, delta) {
       const item = $(`[data-cart-item="${key}"]`, this.drawer);
-      const valueEl = $('[data-qty-value]', item);
-      let qty = parseInt(valueEl.textContent) + change;
-      if (qty < 1) qty = 0;
+      if (!item) return;
+      const valEl = $('[data-qty-value]', item);
+      let qty = parseInt(valEl.textContent) + delta;
+      if (qty < 0) qty = 0;
 
+      item.style.opacity = '0.5';
       try {
         const res = await fetch('/cart/change.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: key, quantity: qty })
         });
-        if (res.ok) location.reload();
-      } catch (e) {
-        console.error('Cart update failed:', e);
-      }
+        if (res.ok) window.location.reload();
+      } catch (e) { console.error(e); item.style.opacity = '1'; }
     }
 
     async removeItem(key) {
+      const item = $(`[data-cart-item="${key}"]`, this.drawer);
+      if (item) {
+        item.style.transform = 'translateX(100%)';
+        item.style.opacity = '0';
+      }
       try {
         const res = await fetch('/cart/change.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: key, quantity: 0 })
         });
-        if (res.ok) location.reload();
-      } catch (e) {
-        console.error('Cart remove failed:', e);
-      }
+        if (res.ok) setTimeout(() => window.location.reload(), 300);
+      } catch (e) { console.error(e); }
     }
   }
-
 
   // === PRODUCT GALLERY ===
   class ProductGallery {
     constructor() {
-      this.mainImage = $('[data-gallery-main] img');
+      this.main = $('[data-gallery-main]');
+      this.mainImg = this.main ? $('img', this.main) : null;
       this.thumbs = $$('[data-gallery-thumb]');
-      if (!this.mainImage || !this.thumbs.length) return;
-      this.bind();
+      if (!this.mainImg || !this.thumbs.length) return;
+      this.init();
     }
 
-    bind() {
+    init() {
       this.thumbs.forEach(thumb => {
         thumb.addEventListener('click', () => {
           const src = thumb.dataset.galleryThumb;
           const srcset = thumb.dataset.srcset || '';
-          this.mainImage.src = src;
-          if (srcset) this.mainImage.srcset = srcset;
+          this.mainImg.src = src;
+          if (srcset) this.mainImg.srcset = srcset;
           this.thumbs.forEach(t => t.classList.remove('is-active'));
           thumb.classList.add('is-active');
         });
       });
+
+      // Swipe support for mobile
+      this.initSwipe();
+    }
+
+    initSwipe() {
+      if (!this.main) return;
+      let startX = 0;
+      let diff = 0;
+
+      this.main.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+
+      this.main.addEventListener('touchmove', (e) => {
+        diff = e.touches[0].clientX - startX;
+      }, { passive: true });
+
+      this.main.addEventListener('touchend', () => {
+        if (Math.abs(diff) > 50) {
+          const current = this.thumbs.findIndex(t => t.classList.contains('is-active'));
+          let next = diff > 0 ? current - 1 : current + 1;
+          next = Math.max(0, Math.min(next, this.thumbs.length - 1));
+          if (this.thumbs[next]) this.thumbs[next].click();
+        }
+        diff = 0;
+      }, { passive: true });
     }
   }
 
-  // === PRODUCT VARIANT PICKER ===
+  // === VARIANT PICKER ===
   class VariantPicker {
     constructor() {
       this.form = $('[data-product-form]');
-      this.options = $$('[data-variant-option]');
-      this.variantInput = $('[data-selected-variant]');
       this.variantsJson = $('[data-product-variants]');
       if (!this.form || !this.variantsJson) return;
 
       this.variants = JSON.parse(this.variantsJson.textContent);
-      this.bind();
+      this.options = $$('[data-variant-option]');
+      this.variantInput = $('[data-selected-variant]', this.form);
+      this.init();
     }
 
-    bind() {
+    init() {
       this.options.forEach(option => {
         option.addEventListener('click', () => {
           const group = option.closest('[data-option-group]');
           $$('[data-variant-option]', group).forEach(o => o.classList.remove('is-active'));
           option.classList.add('is-active');
+
+          // Update selected label
+          const label = $('[data-option-selected]', group);
+          if (label) label.textContent = option.dataset.variantOption;
+
           this.updateVariant();
         });
       });
@@ -220,115 +283,109 @@
 
     updateVariant() {
       const selected = $$('[data-variant-option].is-active').map(o => o.dataset.variantOption);
-      const match = this.variants.find(v => {
-        return v.options.every((opt, i) => opt === selected[i]);
-      });
+      const match = this.variants.find(v => v.options.every((opt, i) => opt === selected[i]));
 
-      if (match && this.variantInput) {
-        this.variantInput.value = match.id;
+      if (!match) return;
 
-        // Update price display
-        const priceEl = $('[data-product-price]');
-        if (priceEl) {
-          priceEl.textContent = this.formatMoney(match.price);
+      if (this.variantInput) this.variantInput.value = match.id;
+
+      // Price
+      const priceEl = $('[data-product-price]');
+      if (priceEl) priceEl.textContent = formatMoney(match.price);
+
+      const compareEl = $('[data-product-compare-price]');
+      if (compareEl) {
+        if (match.compare_at_price && match.compare_at_price > match.price) {
+          compareEl.textContent = formatMoney(match.compare_at_price);
+          compareEl.style.display = '';
+        } else {
+          compareEl.style.display = 'none';
         }
-
-        const compareEl = $('[data-product-compare-price]');
-        if (compareEl) {
-          if (match.compare_at_price && match.compare_at_price > match.price) {
-            compareEl.textContent = this.formatMoney(match.compare_at_price);
-            compareEl.style.display = '';
-          } else {
-            compareEl.style.display = 'none';
-          }
-        }
-
-        // Update add to cart button
-        const submitBtn = $('[data-add-to-cart]');
-        if (submitBtn) {
-          if (match.available) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Add to Cart';
-          } else {
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sold Out';
-          }
-        }
-
-        // Update URL
-        const url = new URL(window.location);
-        url.searchParams.set('variant', match.id);
-        window.history.replaceState({}, '', url);
       }
-    }
 
-    formatMoney(cents) {
-      const format = window.theme?.moneyFormat || '${{amount}}';
-      const amount = (cents / 100).toFixed(2);
-      return format
-        .replace('{{amount}}', amount)
-        .replace('{{amount_no_decimals}}', Math.round(cents / 100))
-        .replace('{{amount_with_comma_separator}}', amount.replace('.', ','));
+      // Button state
+      const btn = $('[data-add-to-cart]');
+      if (btn) {
+        btn.disabled = !match.available;
+        btn.querySelector('[data-btn-text]').textContent = match.available ? 'Add to Cart' : 'Sold Out';
+      }
+
+      // Update gallery if variant has image
+      if (match.featured_image) {
+        const mainImg = $('[data-gallery-main] img');
+        if (mainImg) mainImg.src = match.featured_image.src;
+      }
+
+      // URL
+      const url = new URL(window.location);
+      url.searchParams.set('variant', match.id);
+      window.history.replaceState({}, '', url);
     }
   }
-
 
   // === ADD TO CART (AJAX) ===
   class AddToCart {
     constructor() {
       this.forms = $$('[data-product-form]');
       if (!this.forms.length) return;
-      this.bind();
+      this.init();
     }
 
-    bind() {
+    init() {
       this.forms.forEach(form => {
-        form.addEventListener('submit', (e) => this.handleSubmit(e, form));
+        form.addEventListener('submit', (e) => this.handle(e, form));
+      });
+
+      // Quick add forms
+      $$('[data-quick-add-form]').forEach(form => {
+        form.addEventListener('submit', (e) => this.handle(e, form));
       });
     }
 
-    async handleSubmit(e, form) {
+    async handle(e, form) {
       e.preventDefault();
-      const btn = $('[data-add-to-cart]', form);
-      if (btn.disabled) return;
+      const btn = $('[data-add-to-cart]', form) || form.querySelector('button[type="submit"]');
+      if (!btn || btn.disabled) return;
 
-      const originalText = btn.textContent;
-      btn.textContent = 'Adding...';
+      const btnText = $('[data-btn-text]', btn) || btn;
+      const originalText = btnText.textContent;
+      btnText.textContent = 'Adding...';
       btn.disabled = true;
 
       const formData = new FormData(form);
-      const data = {
-        id: formData.get('id'),
-        quantity: parseInt(formData.get('quantity') || 1)
-      };
 
       try {
         const res = await fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: JSON.stringify({
+            id: formData.get('id'),
+            quantity: parseInt(formData.get('quantity') || 1)
+          })
         });
 
         if (res.ok) {
-          btn.textContent = 'Added!';
+          btnText.textContent = 'Added ✓';
           this.updateCartCount();
-          // Open cart drawer
+
+          // Open cart drawer after short delay
           setTimeout(() => {
-            location.reload();
-          }, 600);
+            const drawer = $('[data-cart-drawer]');
+            if (drawer) window.location.reload();
+          }, 800);
         } else {
-          const error = await res.json();
-          btn.textContent = error.description || 'Error';
+          const err = await res.json();
+          btnText.textContent = err.description || 'Error';
         }
       } catch (err) {
-        btn.textContent = 'Error';
-        console.error('Add to cart failed:', err);
+        btnText.textContent = 'Error';
+        console.error(err);
       }
 
       setTimeout(() => {
-        btn.textContent = originalText;
+        btnText.textContent = originalText;
         btn.disabled = false;
-      }, 2000);
+      }, 2500);
     }
 
     async updateCartCount() {
@@ -339,25 +396,17 @@
           el.textContent = cart.item_count;
           el.style.display = cart.item_count > 0 ? 'flex' : 'none';
         });
-      } catch (e) {
-        console.error('Cart count update failed:', e);
-      }
+      } catch (e) { /* silent */ }
     }
   }
 
   // === QUANTITY SELECTOR ===
   class QuantitySelector {
     constructor() {
-      this.selectors = $$('[data-quantity-selector]');
-      if (!this.selectors.length) return;
-      this.bind();
-    }
-
-    bind() {
-      this.selectors.forEach(selector => {
-        const minus = $('[data-qty-decrease]', selector);
-        const plus = $('[data-qty-increase]', selector);
-        const input = $('[data-qty-input]', selector);
+      $$('[data-quantity-selector]').forEach(sel => {
+        const minus = $('[data-qty-decrease]', sel);
+        const plus = $('[data-qty-increase]', sel);
+        const input = $('[data-qty-input]', sel);
 
         minus?.addEventListener('click', () => {
           const val = parseInt(input.value) - 1;
@@ -365,53 +414,45 @@
         });
 
         plus?.addEventListener('click', () => {
-          const val = parseInt(input.value) + 1;
-          input.value = val;
+          input.value = parseInt(input.value) + 1;
         });
       });
     }
   }
 
-  // === SCROLL ANIMATIONS ===
-  class ScrollAnimations {
+  // === PRODUCT TABS ===
+  class ProductTabs {
     constructor() {
-      this.elements = $$('.animate-in');
-      if (!this.elements.length) return;
+      this.tabs = $$('[data-tab-trigger]');
+      this.panels = $$('[data-tab-panel]');
+      if (!this.tabs.length) return;
+      this.init();
+    }
 
-      if ('IntersectionObserver' in window) {
-        this.observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              this.observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-        this.elements.forEach(el => this.observer.observe(el));
-      } else {
-        this.elements.forEach(el => el.classList.add('is-visible'));
-      }
+    init() {
+      this.tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.tabTrigger;
+          this.tabs.forEach(t => t.classList.remove('is-active'));
+          this.panels.forEach(p => p.classList.remove('is-active'));
+          tab.classList.add('is-active');
+          const panel = $(`[data-tab-panel="${target}"]`);
+          if (panel) panel.classList.add('is-active');
+        });
+      });
     }
   }
 
-  // === PRODUCT STICKY ADD TO CART (MOBILE) ===
+  // === STICKY ADD TO CART (MOBILE) ===
   class StickyATC {
     constructor() {
       this.sticky = $('[data-sticky-atc]');
       this.trigger = $('[data-add-to-cart]');
       if (!this.sticky || !this.trigger) return;
-      this.bind();
-    }
 
-    bind() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            this.sticky.style.display = 'none';
-          } else {
-            this.sticky.style.display = 'block';
-          }
+          this.sticky.style.display = entry.isIntersecting ? 'none' : 'block';
         });
       }, { threshold: 0 });
 
@@ -419,17 +460,100 @@
     }
   }
 
-  // === INITIALIZE ===
-  document.addEventListener('DOMContentLoaded', () => {
-    new MobileMenu();
+  // === PARALLAX HERO ===
+  class ParallaxHero {
+    constructor() {
+      this.heroes = $$('[data-parallax]');
+      if (!this.heroes.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      this.init();
+    }
+
+    init() {
+      const onScroll = throttle(() => {
+        const scrollY = window.scrollY;
+        this.heroes.forEach(hero => {
+          const img = $('img', hero);
+          if (img && scrollY < window.innerHeight * 1.5) {
+            img.style.transform = `translateY(${scrollY * 0.3}px)`;
+          }
+        });
+      }, 16);
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+  }
+
+  // === LAZY LOADING IMAGES ===
+  class LazyImages {
+    constructor() {
+      if ('loading' in HTMLImageElement.prototype) return; // Native lazy load supported
+      const images = $$('img[loading="lazy"]');
+      if (!images.length || !('IntersectionObserver' in window)) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) img.src = img.dataset.src;
+            if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+            observer.unobserve(img);
+          }
+        });
+      }, { rootMargin: '200px' });
+
+      images.forEach(img => observer.observe(img));
+    }
+  }
+
+  // === MARQUEE PAUSE ON HOVER ===
+  class MarqueePause {
+    constructor() {
+      $$('[data-marquee]').forEach(marquee => {
+        const track = $('[data-marquee-track]', marquee);
+        if (!track) return;
+        marquee.addEventListener('mouseenter', () => { track.style.animationPlayState = 'paused'; });
+        marquee.addEventListener('mouseleave', () => { track.style.animationPlayState = 'running'; });
+      });
+    }
+  }
+
+  // === ANNOUNCEMENT BAR MARQUEE ===
+  class AnnouncementMarquee {
+    constructor() {
+      const slider = $('.announcement-bar__slider');
+      if (!slider || slider.children.length < 2) return;
+      // Duplicate content for seamless loop
+      const clone = slider.innerHTML;
+      slider.innerHTML += clone;
+    }
+  }
+
+  // === INITIALIZE EVERYTHING ===
+  function init() {
+    // Remove loading class
+    document.body.classList.remove('is-loading');
+
+    new RevealOnScroll();
     new StickyHeader();
+    new MobileMenu();
     new CartDrawer();
     new ProductGallery();
     new VariantPicker();
     new AddToCart();
     new QuantitySelector();
-    new ScrollAnimations();
+    new ProductTabs();
     new StickyATC();
-  });
+    new ParallaxHero();
+    new LazyImages();
+    new MarqueePause();
+    new AnnouncementMarquee();
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
 })();

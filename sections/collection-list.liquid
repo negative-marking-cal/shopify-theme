@@ -1,40 +1,23 @@
 <section class="section" data-section-id="{{ section.id }}">
   <div class="container">
-    <div class="collection-list__header animate-in">
+    <div class="collection-list__header reveal">
       {%- if section.settings.subtitle != blank -%}
-        <p class="featured-collection__subtitle">{{ section.settings.subtitle }}</p>
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
       {%- endif -%}
       {%- if section.settings.title != blank -%}
-        <h2>{{ section.settings.title }}</h2>
+        <h2 class="section-title">{{ section.settings.title }}</h2>
       {%- endif -%}
     </div>
 
-    <div class="grid grid--{{ section.settings.columns }}">
+    <div class="collection-list__grid stagger-children" style="grid-template-columns: repeat({{ section.settings.columns }}, 1fr);">
       {%- for block in section.blocks -%}
         {%- assign collection = collections[block.settings.collection] -%}
-        <a href="{{ collection.url | default: '#' }}" class="collection-list__item animate-in" style="transition-delay: {{ forloop.index | times: 0.1 }}s;" {{ block.shopify_attributes }}>
+        <a href="{{ collection.url | default: '#' }}" class="collection-list__item reveal" {{ block.shopify_attributes }}>
           <div class="collection-list__item-media">
             {%- if block.settings.image != blank -%}
-              <img
-                src="{{ block.settings.image | image_url: width: 600 }}"
-                srcset="
-                  {{ block.settings.image | image_url: width: 400 }} 400w,
-                  {{ block.settings.image | image_url: width: 600 }} 600w
-                "
-                sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw"
-                alt="{{ collection.title | default: block.settings.title | escape }}"
-                width="{{ block.settings.image.width }}"
-                height="{{ block.settings.image.height }}"
-                loading="lazy"
-              >
+              <img src="{{ block.settings.image | image_url: width: 600 }}" alt="{{ collection.title | default: block.settings.title | escape }}" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}" loading="lazy">
             {%- elsif collection.image -%}
-              <img
-                src="{{ collection.image | image_url: width: 600 }}"
-                alt="{{ collection.title | escape }}"
-                width="{{ collection.image.width }}"
-                height="{{ collection.image.height }}"
-                loading="lazy"
-              >
+              <img src="{{ collection.image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" width="{{ collection.image.width }}" height="{{ collection.image.height }}" loading="lazy">
             {%- else -%}
               {{ 'collection-' | append: forloop.index | placeholder_svg_tag }}
             {%- endif -%}
@@ -42,6 +25,9 @@
           <div class="collection-list__item-overlay">
             <h3 class="collection-list__item-title">
               {{ block.settings.title | default: collection.title | default: 'Collection' }}
+              {%- if collection.products_count -%}
+                <span class="collection-list__item-count">{{ collection.products_count }} products</span>
+              {%- endif -%}
             </h3>
           </div>
         </a>
@@ -55,71 +41,28 @@
   "name": "Collection List",
   "class": "collection-list-section",
   "settings": [
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "Categories"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "Shop by Category"
-    },
-    {
-      "type": "select",
-      "id": "columns",
-      "label": "Columns",
-      "options": [
-        { "value": "2", "label": "2 Columns" },
-        { "value": "3", "label": "3 Columns" },
-        { "value": "4", "label": "4 Columns" }
-      ],
-      "default": "3"
-    }
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Categories" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Shop by Category" },
+    { "type": "select", "id": "columns", "label": "Columns", "options": [{"value":"2","label":"2"},{"value":"3","label":"3"},{"value":"4","label":"4"}], "default": "3" }
   ],
   "blocks": [
     {
       "type": "collection",
       "name": "Collection",
       "settings": [
-        {
-          "type": "collection",
-          "id": "collection",
-          "label": "Collection"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Custom Title (optional)"
-        },
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Custom Image (optional)"
-        }
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Custom Title" },
+        { "type": "image_picker", "id": "image", "label": "Custom Image" }
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Collection List",
-      "blocks": [
-        {
-          "type": "collection",
-          "settings": { "title": "T-Shirts" }
-        },
-        {
-          "type": "collection",
-          "settings": { "title": "Hoodies" }
-        },
-        {
-          "type": "collection",
-          "settings": { "title": "Polos" }
-        }
-      ]
-    }
-  ]
+  "presets": [{
+    "name": "Collection List",
+    "blocks": [
+      { "type": "collection", "settings": { "title": "T-Shirts" } },
+      { "type": "collection", "settings": { "title": "Hoodies" } },
+      { "type": "collection", "settings": { "title": "Polos" } }
+    ]
+  }]
 }
 {% endschema %}

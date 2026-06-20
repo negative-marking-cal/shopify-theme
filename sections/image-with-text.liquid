@@ -1,15 +1,11 @@
 <section class="section" data-section-id="{{ section.id }}">
   <div class="container">
-    <div class="split-section{% if section.settings.image_position == 'right' %} split-section--reverse{% endif %}">
-      <div class="split-section__media animate-in">
+    <div class="split{% if section.settings.image_position == 'right' %} split--reverse{% endif %}">
+      <div class="split__media img-reveal">
         {%- if section.settings.image != blank -%}
           <img
             src="{{ section.settings.image | image_url: width: 900 }}"
-            srcset="
-              {{ section.settings.image | image_url: width: 450 }} 450w,
-              {{ section.settings.image | image_url: width: 700 }} 700w,
-              {{ section.settings.image | image_url: width: 900 }} 900w
-            "
+            srcset="{{ section.settings.image | image_url: width: 450 }} 450w, {{ section.settings.image | image_url: width: 700 }} 700w, {{ section.settings.image | image_url: width: 900 }} 900w"
             sizes="(min-width: 750px) 50vw, 100vw"
             alt="{{ section.settings.image.alt | escape | default: section.settings.title }}"
             width="{{ section.settings.image.width }}"
@@ -20,24 +16,18 @@
           {{ 'image' | placeholder_svg_tag }}
         {%- endif -%}
       </div>
-
-      <div class="split-section__content animate-in">
+      <div class="split__content reveal">
         {%- if section.settings.subtitle != blank -%}
-          <p class="split-section__subtitle">{{ section.settings.subtitle }}</p>
+          <p class="split__subtitle">{{ section.settings.subtitle }}</p>
         {%- endif -%}
-
         {%- if section.settings.title != blank -%}
-          <h2 class="split-section__title">{{ section.settings.title }}</h2>
+          <h2 class="split__title">{{ section.settings.title }}</h2>
         {%- endif -%}
-
         {%- if section.settings.text != blank -%}
-          <div class="split-section__text">{{ section.settings.text }}</div>
+          <div class="split__text">{{ section.settings.text }}</div>
         {%- endif -%}
-
         {%- if section.settings.button_label != blank -%}
-          <a href="{{ section.settings.button_link }}" class="btn btn--primary">
-            {{ section.settings.button_label }}
-          </a>
+          <a href="{{ section.settings.button_link }}" class="btn btn--primary">{{ section.settings.button_label }}</a>
         {%- endif -%}
       </div>
     </div>
@@ -49,54 +39,14 @@
   "name": "Image with Text",
   "class": "image-with-text-section",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Image"
-    },
-    {
-      "type": "select",
-      "id": "image_position",
-      "label": "Image Position",
-      "options": [
-        { "value": "left", "label": "Left" },
-        { "value": "right", "label": "Right" }
-      ],
-      "default": "left"
-    },
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "The Detail"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "Embroidery Up Close"
-    },
-    {
-      "type": "richtext",
-      "id": "text",
-      "label": "Content",
-      "default": "<p>Our computerized embroidery machines run at over 1,000 stitches per minute with pinpoint accuracy. The result? Designs that look hand-crafted but with a consistency and precision that only technology can deliver.</p>"
-    },
-    {
-      "type": "text",
-      "id": "button_label",
-      "label": "Button Label"
-    },
-    {
-      "type": "url",
-      "id": "button_link",
-      "label": "Button Link"
-    }
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "select", "id": "image_position", "label": "Image Position", "options": [{"value":"left","label":"Left"},{"value":"right","label":"Right"}], "default": "left" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "The Detail" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Embroidery Up Close" },
+    { "type": "richtext", "id": "text", "label": "Content", "default": "<p>Our computerized embroidery machines run at over 1,000 stitches per minute with pinpoint accuracy.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button Label" },
+    { "type": "url", "id": "button_link", "label": "Button Link" }
   ],
-  "presets": [
-    {
-      "name": "Image with Text"
-    }
-  ]
+  "presets": [{ "name": "Image with Text" }]
 }
 {% endschema %}

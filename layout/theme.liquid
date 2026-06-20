@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="theme-color" content="{{ settings.color_accent }}">
+  <meta name="theme-color" content="{{ settings.color_accent | default: '#8B6F47' }}">
 
   {%- if settings.favicon != blank -%}
     <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
   {%- endif -%}
 
   <title>
@@ -21,61 +22,164 @@
     <meta name="description" content="{{ page_description | escape }}">
   {%- endif -%}
 
+  <link rel="canonical" href="{{ canonical_url }}">
+
   {%- render 'meta-tags' -%}
 
-  <link rel="canonical" href="{{ canonical_url }}">
+  {%- comment -%} Structured Data - Organization {%- endcomment -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ shop.url | json }},
+      {%- if settings.social_instagram != blank -%}
+      "sameAs": [
+        {{ settings.social_instagram | json }}
+        {%- if settings.social_facebook != blank -%},{{ settings.social_facebook | json }}{%- endif -%}
+        {%- if settings.social_twitter != blank -%},{{ settings.social_twitter | json }}{%- endif -%}
+        {%- if settings.social_youtube != blank -%},{{ settings.social_youtube | json }}{%- endif -%}
+      ],
+      {%- endif -%}
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "url": "{{ shop.url }}/pages/contact"
+      }
+    }
+  </script>
+
+  {%- comment -%} Structured Data - WebSite (for Sitelinks Search Box) {%- endcomment -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "url": {{ shop.url | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ shop.url }}/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+
+  {%- comment -%} Product Structured Data {%- endcomment -%}
+  {%- if request.page_type == 'product' -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": {{ product.title | json }},
+        "description": {{ product.description | strip_html | truncate: 500 | json }},
+        "url": "{{ shop.url }}{{ product.url }}",
+        {%- if product.featured_image -%}
+        "image": "https:{{ product.featured_image | image_url: width: 1200 }}",
+        {%- endif -%}
+        "brand": {
+          "@type": "Brand",
+          "name": {{ product.vendor | json }}
+        },
+        "offers": {
+          "@type": "AggregateOffer",
+          "priceCurrency": {{ shop.currency | json }},
+          "lowPrice": {{ product.price_min | money_without_currency | json }},
+          "highPrice": {{ product.price_max | money_without_currency | json }},
+          "offerCount": {{ product.variants.size | json }},
+          "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}"
+        }
+      }
+    </script>
+  {%- endif -%}
+
+  {%- comment -%} BreadcrumbList Structured Data {%- endcomment -%}
+  {%- if request.page_type == 'collection' -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ shop.url }}" },
+          { "@type": "ListItem", "position": 2, "name": {{ collection.title | json }}, "item": "{{ shop.url }}{{ collection.url }}" }
+        ]
+      }
+    </script>
+  {%- elsif request.page_type == 'product' -%}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ shop.url }}" },
+          {%- if product.collections.size > 0 -%}
+          { "@type": "ListItem", "position": 2, "name": {{ product.collections.first.title | json }}, "item": "{{ shop.url }}{{ product.collections.first.url }}" },
+          { "@type": "ListItem", "position": 3, "name": {{ product.title | json }}, "item": "{{ shop.url }}{{ product.url }}" }
+          {%- else -%}
+          { "@type": "ListItem", "position": 2, "name": {{ product.title | json }}, "item": "{{ shop.url }}{{ product.url }}" }
+          {%- endif -%}
+        ]
+      }
+    </script>
+  {%- endif -%}
+
+  {%- comment -%} Preconnects for performance {%- endcomment -%}
   <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
   <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+  <link rel="dns-prefetch" href="https://productreviews.shopifycdn.com">
 
-  {%- unless settings.font_heading.system? and settings.font_body.system? -%}
+  {%- comment -%} Font preloads {%- endcomment -%}
+  {%- unless settings.font_heading.system? -%}
     <link rel="preload" as="font" href="{{ settings.font_heading | font_url }}" type="font/woff2" crossorigin>
+  {%- endunless -%}
+  {%- unless settings.font_body.system? -%}
     <link rel="preload" as="font" href="{{ settings.font_body | font_url }}" type="font/woff2" crossorigin>
   {%- endunless -%}
 
-  {{ 'theme.css' | asset_url | stylesheet_tag }}
-
+  {%- comment -%} Critical CSS Variables {%- endcomment -%}
   <style>
     :root {
-      --color-bg: {{ settings.color_background }};
-      --color-text: {{ settings.color_text }};
-      --color-accent: {{ settings.color_accent }};
-      --color-accent-light: {{ settings.color_accent_light }};
-      --color-border: {{ settings.color_border }};
-      --color-btn-bg: {{ settings.color_button_bg }};
-      --color-btn-text: {{ settings.color_button_text }};
-      --color-btn-secondary-bg: {{ settings.color_button_secondary_bg }};
-      --color-btn-secondary-text: {{ settings.color_button_secondary_text }};
-
-      --font-heading: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
-      --font-body: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
-      --font-size-base: {{ settings.font_size_base }}px;
-
-      --page-width: {{ settings.page_width }}px;
-      --section-spacing: {{ settings.section_spacing }}px;
-
-      --header-height: 70px;
-      --announcement-height: 40px;
+      --color-bg: {{ settings.color_background | default: '#FDFCFA' }};
+      --color-bg-alt: {{ settings.color_background_alt | default: '#F6F3EF' }};
+      --color-bg-dark: {{ settings.color_background_dark | default: '#1A1A1A' }};
+      --color-text: {{ settings.color_text | default: '#1A1A1A' }};
+      --color-text-light: {{ settings.color_text_light | default: '#6B6560' }};
+      --color-text-inverse: {{ settings.color_text_inverse | default: '#FDFCFA' }};
+      --color-accent: {{ settings.color_accent | default: '#8B6F47' }};
+      --color-accent-hover: {{ settings.color_accent_hover | default: '#A3845A' }};
+      --color-accent-light: {{ settings.color_accent_light | default: '#D4C4A8' }};
+      --color-border: {{ settings.color_border | default: '#E8E4DF' }};
+      --color-btn-bg: {{ settings.color_button_bg | default: '#1A1A1A' }};
+      --color-btn-text: {{ settings.color_button_text | default: '#FFFFFF' }};
+      --font-heading-family: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
+      --font-body-family: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+      --page-width: {{ settings.page_width | default: 1320 }}px;
     }
 
     {{ settings.font_heading | font_face: font_display: 'swap' }}
     {{ settings.font_body | font_face: font_display: 'swap' }}
   </style>
 
+  {%- comment -%} Main stylesheet {%- endcomment -%}
+  {{ 'theme.css' | asset_url | stylesheet_tag: preload: true }}
+
   {{ content_for_header }}
 
+  {%- comment -%} Theme JS config {%- endcomment -%}
   <script>
     document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    document.body?.classList.add('is-loading');
     window.theme = {
       moneyFormat: {{ shop.money_format | json }},
       cartUrl: '{{ routes.cart_url }}',
-      rootUrl: '{{ routes.root_url }}'
+      rootUrl: '{{ routes.root_url }}',
+      shopUrl: '{{ shop.url }}'
     };
   </script>
 
   <script src="{{ 'theme.js' | asset_url }}" defer></script>
 </head>
 
-<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %} is-loading">
   <a class="skip-to-content" href="#main-content">{{ 'accessibility.skip_to_content' | t }}</a>
 
   {%- sections 'header-group' -%}

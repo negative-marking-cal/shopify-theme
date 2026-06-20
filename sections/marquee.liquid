@@ -1,0 +1,58 @@
+<section class="marquee{% if section.settings.dark_bg %} marquee--dark{% endif %}" data-section-id="{{ section.id }}" data-marquee>
+  <div class="marquee__track" data-marquee-track>
+    {%- for block in section.blocks -%}
+      <div class="marquee__item" {{ block.shopify_attributes }}>
+        {{ block.settings.text }}
+        <span class="marquee__separator"></span>
+      </div>
+    {%- endfor -%}
+    {%- comment -%} Duplicate for seamless loop {%- endcomment -%}
+    {%- for block in section.blocks -%}
+      <div class="marquee__item" aria-hidden="true">
+        {{ block.settings.text }}
+        <span class="marquee__separator"></span>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Scrolling Text",
+  "class": "marquee-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "dark_bg",
+      "label": "Dark Background",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Computerized Embroidery"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling Text",
+      "blocks": [
+        { "type": "text", "settings": { "text": "Computerized Embroidery" } },
+        { "type": "text", "settings": { "text": "Premium Fabrics" } },
+        { "type": "text", "settings": { "text": "Art in Every Stitch" } },
+        { "type": "text", "settings": { "text": "Handcrafted Design" } },
+        { "type": "text", "settings": { "text": "Made With Precision" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

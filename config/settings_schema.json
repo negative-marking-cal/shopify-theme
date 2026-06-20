@@ -22,15 +22,45 @@
       },
       {
         "type": "color",
+        "id": "color_background_alt",
+        "label": "Background Alt",
+        "default": "#F6F3EF"
+      },
+      {
+        "type": "color",
+        "id": "color_background_dark",
+        "label": "Background Dark",
+        "default": "#1A1A1A"
+      },
+      {
+        "type": "color",
         "id": "color_text",
         "label": "Text",
-        "default": "#2C2C2C"
+        "default": "#1A1A1A"
+      },
+      {
+        "type": "color",
+        "id": "color_text_light",
+        "label": "Text Light",
+        "default": "#6B6560"
+      },
+      {
+        "type": "color",
+        "id": "color_text_inverse",
+        "label": "Text Inverse",
+        "default": "#FDFCFA"
       },
       {
         "type": "color",
         "id": "color_accent",
         "label": "Accent",
         "default": "#8B6F47"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_hover",
+        "label": "Accent Hover",
+        "default": "#A3845A"
       },
       {
         "type": "color",
@@ -52,25 +82,13 @@
         "type": "color",
         "id": "color_button_bg",
         "label": "Button Background",
-        "default": "#2C2C2C"
+        "default": "#1A1A1A"
       },
       {
         "type": "color",
         "id": "color_button_text",
         "label": "Button Text",
         "default": "#FFFFFF"
-      },
-      {
-        "type": "color",
-        "id": "color_button_secondary_bg",
-        "label": "Secondary Button Background",
-        "default": "transparent"
-      },
-      {
-        "type": "color",
-        "id": "color_button_secondary_text",
-        "label": "Secondary Button Text",
-        "default": "#2C2C2C"
       }
     ]
   },

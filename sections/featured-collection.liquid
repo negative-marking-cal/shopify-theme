@@ -1,28 +1,27 @@
-<section class="section featured-collection" data-section-id="{{ section.id }}">
+<section class="section" data-section-id="{{ section.id }}">
   <div class="container">
-    <div class="featured-collection__header animate-in">
+    <div class="featured-collection__header reveal">
       {%- if section.settings.subtitle != blank -%}
-        <p class="featured-collection__subtitle">{{ section.settings.subtitle }}</p>
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
       {%- endif -%}
-
       {%- if section.settings.title != blank -%}
-        <h2 class="featured-collection__title">{{ section.settings.title }}</h2>
+        <h2 class="section-title">{{ section.settings.title }}</h2>
       {%- endif -%}
     </div>
 
     {%- assign collection = collections[section.settings.collection] -%}
     {%- assign limit = section.settings.products_to_show -%}
 
-    <div class="grid grid--{{ section.settings.columns }}">
+    <div class="grid grid--{{ section.settings.columns }} stagger-children">
       {%- if collection != blank -%}
         {%- for product in collection.products limit: limit -%}
-          <div class="animate-in" style="transition-delay: {{ forloop.index | times: 0.1 }}s;">
+          <div class="reveal">
             {%- render 'product-card', product: product, show_vendor: section.settings.show_vendor -%}
           </div>
         {%- endfor -%}
       {%- else -%}
         {%- for i in (1..limit) -%}
-          <div class="product-card animate-in" style="transition-delay: {{ i | times: 0.1 }}s;">
+          <div class="product-card reveal">
             <div class="product-card__media">
               {{ 'product-' | append: i | placeholder_svg_tag: 'product-card__placeholder' }}
             </div>
@@ -36,12 +35,10 @@
     </div>
 
     {%- if section.settings.show_view_all and collection != blank -%}
-      <div class="text-center">
-        <a href="{{ collection.url }}" class="featured-collection__link">
+      <div class="text-center reveal">
+        <a href="{{ collection.url }}" class="btn-text featured-collection__link">
           View All {{ collection.title }}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
     {%- endif -%}
@@ -53,60 +50,14 @@
   "name": "Featured Collection",
   "class": "featured-collection-section",
   "settings": [
-    {
-      "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
-      "default": "New Arrivals"
-    },
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "Latest Drops"
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "label": "Products to Show",
-      "min": 2,
-      "max": 12,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "select",
-      "id": "columns",
-      "label": "Columns (Desktop)",
-      "options": [
-        { "value": "2", "label": "2 Columns" },
-        { "value": "3", "label": "3 Columns" },
-        { "value": "4", "label": "4 Columns" }
-      ],
-      "default": "4"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show Product Vendor",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_view_all",
-      "label": "Show 'View All' Link",
-      "default": true
-    }
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "New Arrivals" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Latest Drops" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "products_to_show", "label": "Products to Show", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "select", "id": "columns", "label": "Columns", "options": [{"value":"2","label":"2"},{"value":"3","label":"3"},{"value":"4","label":"4"}], "default": "4" },
+    { "type": "checkbox", "id": "show_vendor", "label": "Show Vendor", "default": false },
+    { "type": "checkbox", "id": "show_view_all", "label": "Show View All Link", "default": true }
   ],
-  "presets": [
-    {
-      "name": "Featured Collection"
-    }
-  ]
+  "presets": [{ "name": "Featured Collection" }]
 }
 {% endschema %}

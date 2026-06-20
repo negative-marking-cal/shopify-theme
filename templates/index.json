@@ -10,9 +10,25 @@
         "button_link": "shopify://collections/all",
         "button_label_2": "Our Story",
         "button_link_2": "",
-        "overlay_opacity": 30,
-        "text_color_scheme": "light"
+        "height_preset": "full",
+        "overlay_opacity": 40,
+        "enable_parallax": true,
+        "show_scroll_indicator": true
       }
+    },
+    "marquee": {
+      "type": "marquee",
+      "settings": {
+        "dark_bg": false
+      },
+      "blocks": {
+        "m1": { "type": "text", "settings": { "text": "Computerized Embroidery" } },
+        "m2": { "type": "text", "settings": { "text": "Premium Fabrics" } },
+        "m3": { "type": "text", "settings": { "text": "Art in Every Stitch" } },
+        "m4": { "type": "text", "settings": { "text": "Handcrafted Design" } },
+        "m5": { "type": "text", "settings": { "text": "Made With Precision" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5"]
     },
     "featured_collection": {
       "type": "featured-collection",
@@ -35,6 +51,21 @@
         "reverse_layout": false
       }
     },
+    "process": {
+      "type": "process",
+      "settings": {
+        "subtitle": "Our Process",
+        "title": "From Concept to Creation",
+        "description": "Every piece goes through a meticulous 4-step process to ensure perfection."
+      },
+      "blocks": {
+        "s1": { "type": "step", "settings": { "icon": "design", "title": "Design", "text": "Original artwork created by our in-house design team, digitized for embroidery perfection." } },
+        "s2": { "type": "step", "settings": { "icon": "stitch", "title": "Embroider", "text": "1,000+ stitches per minute with computerized precision. Every thread placed intentionally." } },
+        "s3": { "type": "step", "settings": { "icon": "quality", "title": "Quality Check", "text": "Each piece inspected for stitch density, color accuracy, and fabric integrity before packing." } },
+        "s4": { "type": "step", "settings": { "icon": "ship", "title": "Deliver", "text": "Carefully packed and shipped to your doorstep. Unwrap your wearable art." } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"]
+    },
     "collection_list": {
       "type": "collection-list",
       "settings": {
@@ -43,18 +74,9 @@
         "columns": "3"
       },
       "blocks": {
-        "col_1": {
-          "type": "collection",
-          "settings": { "title": "T-Shirts" }
-        },
-        "col_2": {
-          "type": "collection",
-          "settings": { "title": "Hoodies" }
-        },
-        "col_3": {
-          "type": "collection",
-          "settings": { "title": "Polos" }
-        }
+        "col_1": { "type": "collection", "settings": { "title": "T-Shirts" } },
+        "col_2": { "type": "collection", "settings": { "title": "Hoodies" } },
+        "col_3": { "type": "collection", "settings": { "title": "Polos" } }
       },
       "block_order": ["col_1", "col_2", "col_3"]
     },
@@ -76,32 +98,11 @@
         "title": "What Our Customers Say"
       },
       "blocks": {
-        "review_1": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee.",
-            "author": "Rahul S."
-          }
-        },
-        "review_2": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "Ordered two oversized tees. The stitching detail is next level and the fabric feels premium. Worth every rupee.",
-            "author": "Priya M."
-          }
-        },
-        "review_3": {
-          "type": "testimonial",
-          "settings": {
-            "rating": 5,
-            "text": "Finally a brand that does embroidery right. Clean designs, great fit, and fast delivery. My new go-to.",
-            "author": "Arjun K."
-          }
-        }
+        "r1": { "type": "testimonial", "settings": { "rating": 5, "text": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee. It's not just a t-shirt, it's art.", "author": "Rahul S." } },
+        "r2": { "type": "testimonial", "settings": { "rating": 5, "text": "Ordered two oversized tees. The stitching detail is next level and the fabric feels premium. Worth every rupee spent.", "author": "Priya M." } },
+        "r3": { "type": "testimonial", "settings": { "rating": 5, "text": "Finally a brand that does embroidery right. Clean designs, great fit, and fast delivery. My new go-to for statement pieces.", "author": "Arjun K." } }
       },
-      "block_order": ["review_1", "review_2", "review_3"]
+      "block_order": ["r1", "r2", "r3"]
     },
     "newsletter": {
       "type": "newsletter",
@@ -115,8 +116,10 @@
   },
   "order": [
     "hero",
+    "marquee",
     "featured_collection",
     "brand_story",
+    "process",
     "collection_list",
     "image_with_text",
     "testimonials",
