@@ -1,0 +1,111 @@
+<section class="section" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="collection-header">
+      <h1 class="collection-header__title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <p class="collection-header__description">{{ collection.description }}</p>
+      {%- endif -%}
+      <p class="collection-header__count">{{ collection.products_count }} {{ collection.products_count | pluralize: 'product', 'products' }}</p>
+    </div>
+
+    {%- if section.settings.enable_sorting -%}
+      <div class="collection-toolbar">
+        <div class="collection-toolbar__sort">
+          <label for="sort-by" class="visually-hidden">Sort by</label>
+          <select id="sort-by" data-sort-select onchange="window.location.href = this.value;">
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.url }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+                {{ option.name }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+        <span class="collection-toolbar__count">{{ collection.products_count }} products</span>
+      </div>
+    {%- endif -%}
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      <div class="collection-grid">
+        {%- for product in collection.products -%}
+          <div class="animate-in" style="transition-delay: {{ forloop.index | times: 0.05 }}s;">
+            {%- render 'product-card', product: product, show_vendor: section.settings.show_vendor -%}
+          </div>
+        {%- else -%}
+          <p class="text-center" style="grid-column: 1/-1; padding: 3rem 0;">
+            No products found in this collection.
+          </p>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="Pagination">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" class="pagination__item" aria-label="Previous page">&larr;</a>
+          {%- endif -%}
+
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}" class="pagination__item">{{ part.title }}</a>
+            {%- else -%}
+              {%- if part.title == paginate.current_page -%}
+                <span class="pagination__item is-active" aria-current="page">{{ part.title }}</span>
+              {%- else -%}
+                <span class="pagination__item">{{ part.title }}</span>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" class="pagination__item" aria-label="Next page">&rarr;</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Products",
+  "class": "main-collection-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products Per Page",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Grid Columns (Desktop)",
+      "options": [
+        { "value": "3", "label": "3 Columns" },
+        { "value": "4", "label": "4 Columns" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show Vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable Sorting",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable Filtering",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

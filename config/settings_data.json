@@ -1,0 +1,39 @@
+{
+  "current": {
+    "color_background": "#FDFCFA",
+    "color_text": "#2C2C2C",
+    "color_accent": "#8B6F47",
+    "color_accent_light": "#D4C4A8",
+    "color_border": "#E8E4DF",
+    "color_button_bg": "#2C2C2C",
+    "color_button_text": "#FFFFFF",
+    "color_button_secondary_bg": "transparent",
+    "color_button_secondary_text": "#2C2C2C",
+    "font_heading": "cormorant_garamond_n4",
+    "font_body": "inter_n4",
+    "font_size_base": 16,
+    "page_width": 1280,
+    "section_spacing": 60,
+    "cart_type": "drawer",
+    "cart_show_free_shipping_bar": true,
+    "cart_free_shipping_threshold": "999",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_width": 120,
+          "sticky_header": true,
+          "show_search": true
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "show_newsletter": true,
+          "show_payment_icons": true
+        }
+      }
+    },
+    "content_for_index": []
+  }
+}

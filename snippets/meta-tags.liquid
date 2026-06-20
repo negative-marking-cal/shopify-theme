@@ -1,0 +1,29 @@
+{%- if request.page_type == 'product' -%}
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="{{ product.title | escape }}">
+  <meta property="og:description" content="{{ product.description | strip_html | truncate: 200 | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  {%- if product.featured_image -%}
+    <meta property="og:image" content="http:{{ product.featured_image | image_url: width: 1200 }}">
+  {%- endif -%}
+  <meta property="product:price:amount" content="{{ product.price | money_without_currency }}">
+  <meta property="product:price:currency" content="{{ shop.currency }}">
+{%- elsif request.page_type == 'collection' -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ collection.title | escape }}">
+  <meta property="og:description" content="{{ collection.description | strip_html | truncate: 200 | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  {%- if collection.image -%}
+    <meta property="og:image" content="http:{{ collection.image | image_url: width: 1200 }}">
+  {%- endif -%}
+{%- else -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  {%- if page_description -%}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  <meta property="og:url" content="{{ canonical_url }}">
+{%- endif -%}
+
+<meta property="og:site_name" content="{{ shop.name | escape }}">
+<meta name="twitter:card" content="summary_large_image">

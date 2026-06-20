@@ -1,0 +1,26 @@
+{%- comment -%}
+  Renders product price.
+  Accepts:
+  - product: {Object} Product Liquid object
+{%- endcomment -%}
+
+{%- if product.price_varies -%}
+  <span class="product-card__price">
+    From {{ product.price_min | money }}
+  </span>
+{%- elsif product.compare_at_price > product.price -%}
+  <span class="product-card__price product-info__price--sale">
+    {{ product.price | money }}
+  </span>
+  <span class="product-card__price--compare">
+    {{ product.compare_at_price | money }}
+  </span>
+{%- else -%}
+  <span class="product-card__price">
+    {{ product.price | money }}
+  </span>
+{%- endif -%}
+
+{%- if product.available == false -%}
+  <span class="product-card__price" style="opacity:0.5;">Sold Out</span>
+{%- endif -%}

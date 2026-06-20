@@ -1,0 +1,125 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "settings": {
+        "subtitle": "Crafted With Precision",
+        "title": "Where Art Meets Thread",
+        "description": "Premium computerized embroidery on handpicked fabrics. Each piece is a wearable work of art.",
+        "button_label": "Shop Collection",
+        "button_link": "shopify://collections/all",
+        "button_label_2": "Our Story",
+        "button_link_2": "",
+        "overlay_opacity": 30,
+        "text_color_scheme": "light"
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "subtitle": "New Arrivals",
+        "title": "Latest Drops",
+        "products_to_show": 4,
+        "columns": "4",
+        "show_vendor": false,
+        "show_view_all": true
+      }
+    },
+    "brand_story": {
+      "type": "brand-story",
+      "settings": {
+        "subtitle": "Our Craft",
+        "title": "Precision in Every Thread",
+        "text": "<p>We combine cutting-edge computerized embroidery technology with artisan design sensibility. Each piece undergoes meticulous quality checks to ensure the stitching is flawless and the fabric feels premium against your skin.</p><p>From concept to finished garment, every step is handled with care — because we believe what you wear should be as intentional as how you live.</p>",
+        "button_label": "Learn More",
+        "reverse_layout": false
+      }
+    },
+    "collection_list": {
+      "type": "collection-list",
+      "settings": {
+        "subtitle": "Categories",
+        "title": "Shop by Category",
+        "columns": "3"
+      },
+      "blocks": {
+        "col_1": {
+          "type": "collection",
+          "settings": { "title": "T-Shirts" }
+        },
+        "col_2": {
+          "type": "collection",
+          "settings": { "title": "Hoodies" }
+        },
+        "col_3": {
+          "type": "collection",
+          "settings": { "title": "Polos" }
+        }
+      },
+      "block_order": ["col_1", "col_2", "col_3"]
+    },
+    "image_with_text": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "right",
+        "subtitle": "The Detail",
+        "title": "Embroidery Up Close",
+        "text": "<p>Our computerized embroidery machines run at over 1,000 stitches per minute with pinpoint accuracy. The result? Designs that look hand-crafted but with a consistency and precision that only technology can deliver.</p>",
+        "button_label": "Shop Now",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "subtitle": "Reviews",
+        "title": "What Our Customers Say"
+      },
+      "blocks": {
+        "review_1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "text": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee.",
+            "author": "Rahul S."
+          }
+        },
+        "review_2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "text": "Ordered two oversized tees. The stitching detail is next level and the fabric feels premium. Worth every rupee.",
+            "author": "Priya M."
+          }
+        },
+        "review_3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "text": "Finally a brand that does embroidery right. Clean designs, great fit, and fast delivery. My new go-to.",
+            "author": "Arjun K."
+          }
+        }
+      },
+      "block_order": ["review_1", "review_2", "review_3"]
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Join the Thread",
+        "text": "Subscribe for early access to new drops, exclusive offers, and behind-the-scenes looks at our embroidery process.",
+        "placeholder": "Your email address",
+        "button_label": "Subscribe"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "featured_collection",
+    "brand_story",
+    "collection_list",
+    "image_with_text",
+    "testimonials",
+    "newsletter"
+  ]
+}

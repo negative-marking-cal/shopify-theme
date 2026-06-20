@@ -1,0 +1,78 @@
+<section class="page-template" data-section-id="{{ section.id }}">
+  <div class="container">
+    <article>
+      <header style="text-align:center;margin-bottom:2.5rem;">
+        <h1 class="page-template__title">{{ article.title }}</h1>
+        <div class="text-small" style="opacity:0.6;margin-top:0.5rem;">
+          {%- if section.settings.show_date -%}
+            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%B %d, %Y' }}</time>
+          {%- endif -%}
+          {%- if section.settings.show_author -%}
+            <span> &middot; {{ article.author }}</span>
+          {%- endif -%}
+        </div>
+      </header>
+
+      {%- if article.image -%}
+        <div style="margin-bottom:2.5rem;aspect-ratio:16/9;overflow:hidden;">
+          <img
+            src="{{ article.image | image_url: width: 1200 }}"
+            alt="{{ article.image.alt | escape | default: article.title }}"
+            width="{{ article.image.width }}"
+            height="{{ article.image.height }}"
+            loading="eager"
+            style="width:100%;height:100%;object-fit:cover;"
+          >
+        </div>
+      {%- endif -%}
+
+      <div class="page-template__content">
+        {{ article.content }}
+      </div>
+
+      {%- if blog.comments_enabled? -%}
+        <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--color-border);">
+          <h3 style="margin-bottom:1.5rem;">Comments ({{ article.comments_count }})</h3>
+
+          {%- for comment in article.comments -%}
+            <div style="margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--color-border);">
+              <p class="text-small" style="font-weight:500;">{{ comment.author }}</p>
+              <p class="text-small" style="opacity:0.6;margin-bottom:0.5rem;">{{ comment.created_at | date: '%B %d, %Y' }}</p>
+              <p>{{ comment.content }}</p>
+            </div>
+          {%- endfor -%}
+
+          {%- form 'new_comment', article -%}
+            <div style="display:grid;gap:1rem;max-width:500px;margin-top:2rem;">
+              <input type="text" name="comment[author]" placeholder="Your name" required class="newsletter__input">
+              <input type="email" name="comment[email]" placeholder="Your email" required class="newsletter__input">
+              <textarea name="comment[body]" placeholder="Your comment" required class="newsletter__input" rows="4" style="resize:vertical;"></textarea>
+              <button type="submit" class="btn btn--primary">Post Comment</button>
+            </div>
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </article>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Article Page",
+  "class": "main-article-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show Date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show Author",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

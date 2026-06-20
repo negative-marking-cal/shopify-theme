@@ -1,0 +1,36 @@
+<section class="section" data-section-id="{{ section.id }}">
+  <div class="container">
+    <h1 class="collection-header__title" style="text-align:center;margin-bottom:2.5rem;">All Collections</h1>
+
+    <div class="grid grid--3">
+      {%- for collection in collections -%}
+        <a href="{{ collection.url }}" class="collection-list__item animate-in" style="transition-delay: {{ forloop.index | times: 0.1 }}s;">
+          <div class="collection-list__item-media">
+            {%- if collection.image -%}
+              <img
+                src="{{ collection.image | image_url: width: 600 }}"
+                alt="{{ collection.title | escape }}"
+                width="{{ collection.image.width }}"
+                height="{{ collection.image.height }}"
+                loading="lazy"
+              >
+            {%- else -%}
+              {{ 'collection-' | append: forloop.index | placeholder_svg_tag }}
+            {%- endif -%}
+          </div>
+          <div class="collection-list__item-overlay">
+            <h3 class="collection-list__item-title">{{ collection.title }}</h3>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "All Collections",
+  "class": "main-list-collections-section",
+  "settings": []
+}
+{% endschema %}

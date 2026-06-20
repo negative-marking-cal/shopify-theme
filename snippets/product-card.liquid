@@ -1,0 +1,72 @@
+{%- comment -%}
+  Renders a product card.
+  Accepts:
+  - product: {Object} Product Liquid object
+  - show_vendor: {Boolean} Show vendor name (default: false)
+{%- endcomment -%}
+
+<div class="product-card">
+  <div class="product-card__media">
+    <a href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+      {%- if product.featured_image -%}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          srcset="
+            {{ product.featured_image | image_url: width: 300 }} 300w,
+            {{ product.featured_image | image_url: width: 450 }} 450w,
+            {{ product.featured_image | image_url: width: 600 }} 600w
+          "
+          sizes="(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw"
+          alt="{{ product.featured_image.alt | escape | default: product.title | escape }}"
+          width="{{ product.featured_image.width }}"
+          height="{{ product.featured_image.height }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+      {%- endif -%}
+
+      {%- if product.images.size > 1 -%}
+        <div class="product-card__media-secondary">
+          <img
+            src="{{ product.images[1] | image_url: width: 600 }}"
+            alt="{{ product.images[1].alt | escape | default: product.title | escape }}"
+            width="{{ product.images[1].width }}"
+            height="{{ product.images[1].height }}"
+            loading="lazy"
+          >
+        </div>
+      {%- endif -%}
+    </a>
+
+    {%- if product.compare_at_price > product.price -%}
+      <span class="product-card__badge">Sale</span>
+    {%- elsif product.available == false -%}
+      <span class="product-card__badge" style="background:var(--color-text);">Sold Out</span>
+    {%- endif -%}
+
+    {%- if product.available and product.has_only_default_variant -%}
+      <div class="product-card__quick-add">
+        <form action="{{ routes.cart_add_url }}" method="post">
+          <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="btn btn--primary btn--wide btn--small">Quick Add</button>
+        </form>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="product-card__info">
+    {%- if show_vendor and product.vendor != blank -%}
+      <p class="product-card__vendor">{{ product.vendor }}</p>
+    {%- endif -%}
+
+    <h3 class="product-card__title">
+      <a href="{{ product.url }}">{{ product.title }}</a>
+    </h3>
+
+    <div class="product-card__price">
+      {%- render 'price', product: product -%}
+    </div>
+  </div>
+</div>

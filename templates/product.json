@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "show_vendor": true,
+        "show_share": true,
+        "show_description": true
+      }
+    },
+    "related": {
+      "type": "featured-collection",
+      "settings": {
+        "subtitle": "You May Also Like",
+        "title": "Related Products",
+        "products_to_show": 4,
+        "columns": "4",
+        "show_vendor": false,
+        "show_view_all": false
+      }
+    }
+  },
+  "order": ["main", "related"]
+}

@@ -1,0 +1,184 @@
+<section class="product-page" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="product-page__grid">
+      <!-- Gallery -->
+      <div class="product-gallery">
+        <div class="product-gallery__main" data-gallery-main>
+          {%- if product.featured_image -%}
+            <img
+              src="{{ product.featured_image | image_url: width: 900 }}"
+              srcset="
+                {{ product.featured_image | image_url: width: 500 }} 500w,
+                {{ product.featured_image | image_url: width: 700 }} 700w,
+                {{ product.featured_image | image_url: width: 900 }} 900w
+              "
+              sizes="(min-width: 750px) 50vw, 100vw"
+              alt="{{ product.featured_image.alt | escape | default: product.title }}"
+              width="{{ product.featured_image.width }}"
+              height="{{ product.featured_image.height }}"
+              loading="eager"
+            >
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag }}
+          {%- endif -%}
+        </div>
+
+        {%- if product.images.size > 1 -%}
+          <div class="product-gallery__thumbs">
+            {%- for image in product.images -%}
+              <button
+                class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                data-gallery-thumb="{{ image | image_url: width: 900 }}"
+                data-srcset="{{ image | image_url: width: 500 }} 500w, {{ image | image_url: width: 700 }} 700w, {{ image | image_url: width: 900 }} 900w"
+                aria-label="View image {{ forloop.index }}"
+              >
+                <img
+                  src="{{ image | image_url: width: 100 }}"
+                  alt="{{ image.alt | escape | default: product.title }}"
+                  width="80"
+                  height="80"
+                  loading="lazy"
+                >
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info">
+        {%- if section.settings.show_vendor and product.vendor != blank -%}
+          <p class="product-info__vendor">{{ product.vendor }}</p>
+        {%- endif -%}
+
+        <h1 class="product-info__title">{{ product.title }}</h1>
+
+        <div class="product-info__price">
+          <span data-product-price>{{ product.selected_or_first_available_variant.price | money }}</span>
+          {%- if product.compare_at_price > product.price -%}
+            <span class="product-info__price-compare" data-product-compare-price>
+              {{ product.compare_at_price | money }}
+            </span>
+          {%- endif -%}
+        </div>
+
+
+        {%- form 'product', product, data-product-form: '' -%}
+          <!-- Variant Picker -->
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <div class="variant-picker" data-option-group>
+                <label class="variant-picker__label">
+                  {{ option.name }}
+                </label>
+                <div class="variant-picker__options">
+                  {%- for value in option.values -%}
+                    <button
+                      type="button"
+                      class="variant-picker__option{% if option.selected_value == value %} is-active{% endif %}"
+                      data-variant-option="{{ value }}"
+                    >
+                      {{ value }}
+                    </button>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-selected-variant>
+
+          <!-- Quantity -->
+          <div class="quantity-selector" data-quantity-selector>
+            <button type="button" class="quantity-selector__btn" data-qty-decrease aria-label="Decrease quantity">-</button>
+            <input type="number" name="quantity" value="1" min="1" class="quantity-selector__value" data-qty-input aria-label="Quantity">
+            <button type="button" class="quantity-selector__btn" data-qty-increase aria-label="Increase quantity">+</button>
+          </div>
+
+          <!-- Add to Cart -->
+          <div class="product-form__submit">
+            <button
+              type="submit"
+              class="btn btn--primary btn--wide"
+              data-add-to-cart
+              {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+            >
+              {%- if product.selected_or_first_available_variant.available -%}
+                Add to Cart
+              {%- else -%}
+                Sold Out
+              {%- endif -%}
+            </button>
+          </div>
+        {%- endform -%}
+
+        <!-- Description -->
+        {%- if section.settings.show_description and product.description != blank -%}
+          <div class="product-info__description">
+            {{ product.description }}
+          </div>
+        {%- endif -%}
+
+        <!-- Share -->
+        {%- if section.settings.show_share -%}
+          <div class="product-info__share" style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--color-border);">
+            <p class="text-small text-uppercase" style="margin-bottom:0.5rem;">Share</p>
+            <div style="display:flex;gap:0.75rem;">
+              <a href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ product.url }}" target="_blank" rel="noopener" aria-label="Share on Facebook">
+                {%- render 'icon-facebook' -%}
+              </a>
+              <a href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ product.url }}&text={{ product.title | url_encode }}" target="_blank" rel="noopener" aria-label="Share on Twitter">
+                {%- render 'icon-twitter' -%}
+              </a>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <!-- Variants JSON for JS -->
+  <script type="application/json" data-product-variants>
+    {{ product.variants | json }}
+  </script>
+
+  <!-- Mobile Sticky Add to Cart -->
+  <div class="product-sticky-atc" data-sticky-atc>
+    <div class="product-sticky-atc__inner">
+      <div class="product-sticky-atc__info">
+        <p class="product-sticky-atc__title">{{ product.title }}</p>
+        <p class="product-sticky-atc__price">{{ product.selected_or_first_available_variant.price | money }}</p>
+      </div>
+      <button class="btn btn--primary btn--small" onclick="document.querySelector('[data-add-to-cart]').click();">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Page",
+  "class": "main-product-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show Vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show Description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show Share Buttons",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
