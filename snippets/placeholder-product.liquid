@@ -1,0 +1,49 @@
+{%- comment -%}
+  Renders a placeholder product image SVG.
+  Accepts: index (1-6), title (optional)
+{%- endcomment -%}
+
+{%- assign colors = 'F6F3EF,EDE8E1,F0EBE3,E8E3DB,F2EDE5,EAE5DD' | split: ',' -%}
+{%- assign accents = '8B6F47,A3845A,7A5F3A,9B7F57,6B5535,B89468' | split: ',' -%}
+{%- assign idx = index | minus: 1 | modulo: 6 -%}
+{%- assign bg = colors[idx] -%}
+{%- assign accent = accents[idx] -%}
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 530" style="width:100%;height:100%;background:#{{ bg }};">
+  <rect width="400" height="530" fill="#{{ bg }}"/>
+
+  {%- comment -%} T-shirt outline {%- endcomment -%}
+  <g transform="translate(100, 80)" opacity="0.6">
+    <path d="M50 0 L0 40 L30 50 L30 280 L170 280 L170 50 L200 40 L150 0 L130 20 C120 30, 80 30, 70 20 Z"
+      fill="none" stroke="#{{ accent }}" stroke-width="1.5"/>
+
+    {%- comment -%} Embroidery design in center {%- endcomment -%}
+    <g transform="translate(60, 80)" opacity="0.4">
+      {%- case index -%}
+        {%- when 1 -%}
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#{{ accent }}" stroke-width="1"/>
+          <path d="M25 40 Q40 20, 55 40 T85 40" fill="none" stroke="#{{ accent }}" stroke-width="0.8"/>
+        {%- when 2 -%}
+          <rect x="10" y="10" width="60" height="60" fill="none" stroke="#{{ accent }}" stroke-width="1" transform="rotate(45, 40, 40)"/>
+        {%- when 3 -%}
+          <polygon points="40,5 50,35 80,35 55,50 65,80 40,60 15,80 25,50 0,35 30,35" fill="none" stroke="#{{ accent }}" stroke-width="1"/>
+        {%- when 4 -%}
+          <path d="M20 60 Q20 20 40 20 Q60 20 60 40 Q60 60 40 80 Q20 60 20 60" fill="none" stroke="#{{ accent }}" stroke-width="1"/>
+          <path d="M60 60 Q60 20 40 20" fill="none" stroke="#{{ accent }}" stroke-width="0.5" stroke-dasharray="2,2"/>
+        {%- when 5 -%}
+          <path d="M10 40 C20 10, 60 10, 70 40 C60 70, 20 70, 10 40" fill="none" stroke="#{{ accent }}" stroke-width="1"/>
+          <line x1="40" y1="15" x2="40" y2="65" stroke="#{{ accent }}" stroke-width="0.5"/>
+        {%- else -%}
+          <circle cx="40" cy="40" r="20" fill="none" stroke="#{{ accent }}" stroke-width="1"/>
+          <circle cx="40" cy="40" r="10" fill="none" stroke="#{{ accent }}" stroke-width="0.5"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#{{ accent }}" stroke-width="0.5" stroke-dasharray="3,3"/>
+      {%- endcase -%}
+    </g>
+  </g>
+
+  {%- if title != blank -%}
+    <text x="200" y="420" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#{{ accent }}" opacity="0.6">{{ title }}</text>
+  {%- endif -%}
+
+  <text x="200" y="470" text-anchor="middle" font-family="serif" font-size="10" fill="#{{ accent }}" opacity="0.3" letter-spacing="3">SAMPLE</text>
+</svg>

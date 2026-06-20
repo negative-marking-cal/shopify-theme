@@ -1,0 +1,65 @@
+{%- comment -%}
+  Renders a placeholder hero SVG background with embroidery-themed imagery.
+  Accepts: index (1-3)
+{%- endcomment -%}
+
+{%- case index -%}
+  {%- when 1 -%}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+      <defs>
+        <linearGradient id="hero-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#2C1810"/>
+          <stop offset="50%" style="stop-color:#4A3228"/>
+          <stop offset="100%" style="stop-color:#1A1A1A"/>
+        </linearGradient>
+        <pattern id="thread-pattern" width="60" height="60" patternUnits="userSpaceOnUse">
+          <path d="M0 30 Q15 20, 30 30 T60 30" fill="none" stroke="rgba(139,111,71,0.15)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="1920" height="1080" fill="url(#hero-grad-1)"/>
+      <rect width="1920" height="1080" fill="url(#thread-pattern)"/>
+      <circle cx="960" cy="540" r="200" fill="none" stroke="rgba(212,196,168,0.1)" stroke-width="1"/>
+      <circle cx="960" cy="540" r="300" fill="none" stroke="rgba(212,196,168,0.06)" stroke-width="1"/>
+      <circle cx="960" cy="540" r="400" fill="none" stroke="rgba(212,196,168,0.03)" stroke-width="1"/>
+      <path d="M860 540 Q910 480, 960 540 T1060 540" fill="none" stroke="rgba(139,111,71,0.3)" stroke-width="2"/>
+      <path d="M860 560 Q910 500, 960 560 T1060 560" fill="none" stroke="rgba(139,111,71,0.2)" stroke-width="1.5"/>
+    </svg>
+  {%- when 2 -%}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+      <defs>
+        <linearGradient id="hero-grad-2" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#1A1A1A"/>
+          <stop offset="50%" style="stop-color:#2C2418"/>
+          <stop offset="100%" style="stop-color:#3D2E1E"/>
+        </linearGradient>
+      </defs>
+      <rect width="1920" height="1080" fill="url(#hero-grad-2)"/>
+      <g opacity="0.12">
+        <line x1="200" y1="200" x2="400" y2="880" stroke="#D4C4A8" stroke-width="0.5"/>
+        <line x1="500" y1="100" x2="700" y2="980" stroke="#D4C4A8" stroke-width="0.5"/>
+        <line x1="800" y1="50" x2="1000" y2="1030" stroke="#D4C4A8" stroke-width="0.5"/>
+        <line x1="1100" y1="100" x2="1300" y2="980" stroke="#D4C4A8" stroke-width="0.5"/>
+        <line x1="1400" y1="200" x2="1600" y2="880" stroke="#D4C4A8" stroke-width="0.5"/>
+      </g>
+      <rect x="760" y="390" width="400" height="300" fill="none" stroke="rgba(139,111,71,0.2)" stroke-width="1"/>
+      <text x="960" y="550" text-anchor="middle" font-family="serif" font-size="48" fill="rgba(212,196,168,0.15)" letter-spacing="8">EMBROIDERY</text>
+    </svg>
+  {%- else -%}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+      <defs>
+        <radialGradient id="hero-grad-3" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" style="stop-color:#3D2E1E"/>
+          <stop offset="100%" style="stop-color:#1A1A1A"/>
+        </radialGradient>
+      </defs>
+      <rect width="1920" height="1080" fill="url(#hero-grad-3)"/>
+      <g opacity="0.08" transform="translate(960,540)">
+        <circle r="100" fill="none" stroke="#D4C4A8" stroke-width="0.5"/>
+        <circle r="150" fill="none" stroke="#D4C4A8" stroke-width="0.5"/>
+        <circle r="200" fill="none" stroke="#D4C4A8" stroke-width="0.5"/>
+        <circle r="250" fill="none" stroke="#D4C4A8" stroke-width="0.5"/>
+        <circle r="300" fill="none" stroke="#D4C4A8" stroke-width="0.5"/>
+      </g>
+      <path d="M760 440 C860 380, 1060 380, 1160 440 S1160 640, 960 640 S760 500, 760 440" fill="none" stroke="rgba(139,111,71,0.2)" stroke-width="1.5"/>
+    </svg>
+{%- endcase -%}

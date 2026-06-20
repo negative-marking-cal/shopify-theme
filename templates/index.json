@@ -1,40 +1,48 @@
 {
   "sections": {
-    "hero": {
-      "type": "hero-banner",
+    "hero_slider": {
+      "type": "hero-slider",
       "settings": {
-        "subtitle": "Crafted With Precision",
-        "title": "Where Art Meets Thread",
-        "description": "Premium computerized embroidery on handpicked fabrics. Each piece is a wearable work of art.",
-        "button_label": "Shop Collection",
-        "button_link": "shopify://collections/all",
-        "button_label_2": "Our Story",
-        "button_link_2": "",
-        "height_preset": "full",
-        "overlay_opacity": 40,
-        "enable_parallax": true,
-        "show_scroll_indicator": true
-      }
-    },
-    "marquee": {
-      "type": "marquee",
-      "settings": {
-        "dark_bg": false
+        "autoplay_speed": 5
       },
       "blocks": {
-        "m1": { "type": "text", "settings": { "text": "Computerized Embroidery" } },
-        "m2": { "type": "text", "settings": { "text": "Premium Fabrics" } },
-        "m3": { "type": "text", "settings": { "text": "Art in Every Stitch" } },
-        "m4": { "type": "text", "settings": { "text": "Handcrafted Design" } },
-        "m5": { "type": "text", "settings": { "text": "Made With Precision" } }
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "subtitle": "New Collection 2025",
+            "title": "Where Art Meets Thread",
+            "description": "Premium computerized embroidery on handpicked fabrics. Each piece is a wearable work of art.",
+            "button_label": "Shop Collection",
+            "button_label_2": "Our Story"
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "subtitle": "Crafted With Precision",
+            "title": "1,000 Stitches Per Minute",
+            "description": "Computerized precision meets artisan design. Experience embroidery like never before.",
+            "button_label": "Explore T-Shirts"
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "subtitle": "Limited Edition",
+            "title": "The Art Collection",
+            "description": "Hand-drawn designs transformed into thread. Only 50 pieces per design.",
+            "button_label": "Shop Limited",
+            "button_label_2": "View Lookbook"
+          }
+        }
       },
-      "block_order": ["m1", "m2", "m3", "m4", "m5"]
+      "block_order": ["slide_1", "slide_2", "slide_3"]
     },
     "featured_collection": {
       "type": "featured-collection",
       "settings": {
         "subtitle": "New Arrivals",
-        "title": "Latest Drops",
+        "title": "Just Dropped",
         "products_to_show": 4,
         "columns": "4",
         "show_vendor": false,
@@ -66,30 +74,44 @@
       },
       "block_order": ["s1", "s2", "s3", "s4"]
     },
-    "collection_list": {
-      "type": "collection-list",
+    "best_sellers": {
+      "type": "featured-collection",
       "settings": {
-        "subtitle": "Categories",
-        "title": "Shop by Category",
-        "columns": "3"
+        "subtitle": "Most Loved",
+        "title": "Best Sellers",
+        "products_to_show": 4,
+        "columns": "4",
+        "show_vendor": false,
+        "show_view_all": true
+      }
+    },
+    "all_products": {
+      "type": "all-products",
+      "settings": {
+        "subtitle": "Full Range",
+        "title": "All Products",
+        "description": "Every piece in our collection — premium embroidery, premium fabric, premium feel.",
+        "products_to_show": 8,
+        "columns": "4",
+        "show_vendor": false,
+        "show_view_all": true,
+        "button_label": "View All Products"
+      }
+    },
+    "marquee": {
+      "type": "marquee",
+      "settings": {
+        "dark_bg": true
       },
       "blocks": {
-        "col_1": { "type": "collection", "settings": { "title": "T-Shirts" } },
-        "col_2": { "type": "collection", "settings": { "title": "Hoodies" } },
-        "col_3": { "type": "collection", "settings": { "title": "Polos" } }
+        "m1": { "type": "text", "settings": { "text": "Computerized Embroidery" } },
+        "m2": { "type": "text", "settings": { "text": "Premium 240GSM Cotton" } },
+        "m3": { "type": "text", "settings": { "text": "Art in Every Stitch" } },
+        "m4": { "type": "text", "settings": { "text": "Oversized Fits" } },
+        "m5": { "type": "text", "settings": { "text": "Made With Precision" } },
+        "m6": { "type": "text", "settings": { "text": "Limited Edition Drops" } }
       },
-      "block_order": ["col_1", "col_2", "col_3"]
-    },
-    "image_with_text": {
-      "type": "image-with-text",
-      "settings": {
-        "image_position": "right",
-        "subtitle": "The Detail",
-        "title": "Embroidery Up Close",
-        "text": "<p>Our computerized embroidery machines run at over 1,000 stitches per minute with pinpoint accuracy. The result? Designs that look hand-crafted but with a consistency and precision that only technology can deliver.</p>",
-        "button_label": "Shop Now",
-        "button_link": "shopify://collections/all"
-      }
+      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6"]
     },
     "testimonials": {
       "type": "testimonials",
@@ -98,9 +120,9 @@
         "title": "What Our Customers Say"
       },
       "blocks": {
-        "r1": { "type": "testimonial", "settings": { "rating": 5, "text": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee. It's not just a t-shirt, it's art.", "author": "Rahul S." } },
-        "r2": { "type": "testimonial", "settings": { "rating": 5, "text": "Ordered two oversized tees. The stitching detail is next level and the fabric feels premium. Worth every rupee spent.", "author": "Priya M." } },
-        "r3": { "type": "testimonial", "settings": { "rating": 5, "text": "Finally a brand that does embroidery right. Clean designs, great fit, and fast delivery. My new go-to for statement pieces.", "author": "Arjun K." } }
+        "r1": { "type": "testimonial", "settings": { "rating": 5, "text": "The embroidery quality is insane. You can feel the craftsmanship the moment you hold the tee. It's not just a t-shirt, it's art you can wear.", "author": "Rahul S." } },
+        "r2": { "type": "testimonial", "settings": { "rating": 5, "text": "Ordered two oversized tees. The stitching detail is next level and the fabric feels premium. 240 GSM cotton that actually lasts. Worth every rupee.", "author": "Priya M." } },
+        "r3": { "type": "testimonial", "settings": { "rating": 5, "text": "Finally a brand that does embroidery right. Clean designs, great fit, fast delivery. Already ordered my third piece. This is my go-to now.", "author": "Arjun K." } }
       },
       "block_order": ["r1", "r2", "r3"]
     },
@@ -115,13 +137,13 @@
     }
   },
   "order": [
-    "hero",
-    "marquee",
+    "hero_slider",
     "featured_collection",
     "brand_story",
     "process",
-    "collection_list",
-    "image_with_text",
+    "best_sellers",
+    "all_products",
+    "marquee",
     "testimonials",
     "newsletter"
   ]

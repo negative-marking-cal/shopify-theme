@@ -1,8 +1,6 @@
 {%- comment -%}
-  Renders a product card.
-  Accepts:
-  - product: {Object} Product Liquid object
-  - show_vendor: {Boolean} Show vendor name (default: false)
+  Product Card - Premium
+  Accepts: product, show_vendor
 {%- endcomment -%}
 
 <div class="product-card">
@@ -23,11 +21,12 @@
           loading="lazy"
         >
       {%- else -%}
-        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+        {%- assign placeholder_index = product.id | modulo: 6 | plus: 1 -%}
+        {%- render 'placeholder-product', index: placeholder_index, title: product.title -%}
       {%- endif -%}
 
       {%- if product.images.size > 1 -%}
-        <div class="product-card__media-secondary">
+        <div class="product-card__media-hover">
           <img
             src="{{ product.images[1] | image_url: width: 600 }}"
             alt="{{ product.images[1].alt | escape | default: product.title | escape }}"
@@ -40,17 +39,20 @@
     </a>
 
     {%- if product.compare_at_price > product.price -%}
-      <span class="product-card__badge">Sale</span>
+      {%- assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+      <span class="product-card__badge">-{{ discount }}%</span>
     {%- elsif product.available == false -%}
-      <span class="product-card__badge" style="background:var(--color-text);">Sold Out</span>
+      <span class="product-card__badge" style="background:var(--color-text-light);">Sold Out</span>
     {%- endif -%}
 
     {%- if product.available and product.has_only_default_variant -%}
-      <div class="product-card__quick-add">
-        <form action="{{ routes.cart_add_url }}" method="post">
+      <div class="product-card__actions">
+        <form action="{{ routes.cart_add_url }}" method="post" data-quick-add-form>
           <input type="hidden" name="id" value="{{ product.first_available_variant.id }}">
           <input type="hidden" name="quantity" value="1">
-          <button type="submit" class="btn btn--primary btn--wide btn--small">Quick Add</button>
+          <button type="submit" class="btn btn--primary btn--wide btn--small" data-add-to-cart>
+            <span data-btn-text>Quick Add</span>
+          </button>
         </form>
       </div>
     {%- endif -%}
@@ -66,7 +68,12 @@
     </h3>
 
     <div class="product-card__price">
-      {%- render 'price', product: product -%}
+      {%- if product.compare_at_price > product.price -%}
+        <span class="product-card__price--sale">{{ product.price | money }}</span>
+        <span class="product-card__price-compare">{{ product.compare_at_price | money }}</span>
+      {%- else -%}
+        <span>{{ product.price | money }}</span>
+      {%- endif -%}
     </div>
   </div>
 </div>

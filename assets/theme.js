@@ -550,10 +550,67 @@
   }
 
   // Run on DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
+  function initAll() {
     init();
+    new HeroSlider();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
   }
 
 })();
+
+
+// === HERO SLIDER ===
+class HeroSlider {
+  constructor() {
+    this.slider = document.querySelector('[data-hero-slider]');
+    if (!this.slider) return;
+    this.track = this.slider.querySelector('[data-slider-track]');
+    this.slides = [...this.track.children];
+    this.dots = [...this.slider.querySelectorAll('[data-slider-dot]')];
+    this.prevBtn = this.slider.querySelector('[data-slider-prev]');
+    this.nextBtn = this.slider.querySelector('[data-slider-next]');
+    this.current = 0;
+    this.total = this.slides.length;
+    this.autoplayDelay = 5000;
+    this.timer = null;
+
+    if (this.total < 2) return;
+    this.init();
+  }
+
+  init() {
+    this.prevBtn?.addEventListener('click', () => { this.prev(); this.resetAutoplay(); });
+    this.nextBtn?.addEventListener('click', () => { this.next(); this.resetAutoplay(); });
+    this.dots.forEach(dot => {
+      dot.addEventListener('click', () => { this.goTo(parseInt(dot.dataset.sliderDot)); this.resetAutoplay(); });
+    });
+
+    // Touch/swipe
+    let startX = 0, diff = 0;
+    this.track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    this.track.addEventListener('touchmove', e => { diff = e.touches[0].clientX - startX; }, { passive: true });
+    this.track.addEventListener('touchend', () => {
+      if (Math.abs(diff) > 60) { diff > 0 ? this.prev() : this.next(); this.resetAutoplay(); }
+      diff = 0;
+    }, { passive: true });
+
+    this.startAutoplay();
+  }
+
+  goTo(index) {
+    this.current = ((index % this.total) + this.total) % this.total;
+    this.track.style.transform = `translateX(-${this.current * 100}%)`;
+    this.dots.forEach((d, i) => d.classList.toggle('is-active', i === this.current));
+  }
+
+  next() { this.goTo(this.current + 1); }
+  prev() { this.goTo(this.current - 1); }
+
+  startAutoplay() { this.timer = setInterval(() => this.next(), this.autoplayDelay); }
+  resetAutoplay() { clearInterval(this.timer); this.startAutoplay(); }
+}

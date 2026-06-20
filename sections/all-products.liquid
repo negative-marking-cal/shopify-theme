@@ -1,0 +1,72 @@
+<section class="section" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="featured-collection__header reveal">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section-subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="section-title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.description != blank -%}
+        <p class="section-description">{{ section.settings.description }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- assign collection = collections[section.settings.collection] -%}
+    {%- assign limit = section.settings.products_to_show -%}
+
+    <div class="grid grid--{{ section.settings.columns }} stagger-children">
+      {%- if collection != blank -%}
+        {%- for product in collection.products limit: limit -%}
+          <div class="reveal">
+            {%- render 'product-card', product: product, show_vendor: section.settings.show_vendor -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..limit) -%}
+          <div class="product-card reveal">
+            <div class="product-card__media">
+              {%- render 'placeholder-product', index: i, title: '' -%}
+            </div>
+            <div class="product-card__info">
+              {%- assign names = 'Tiger Embroidered Tee,Dragon Art Oversized,Lotus Stitch Polo,Wave Pattern Hoodie,Phoenix Rise Tee,Minimal Thread Tee,Koi Fish Oversized,Mountain Art Hoodie' | split: ',' -%}
+              {%- assign prices = '1499,1799,1299,2499,1599,1199,1899,2699' | split: ',' -%}
+              {%- assign idx = i | minus: 1 | modulo: 8 -%}
+              <h3 class="product-card__title"><a href="#">{{ names[idx] }}</a></h3>
+              <div class="product-card__price">
+                <span>₹{{ prices[idx] }}</span>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_view_all -%}
+      <div class="text-center reveal" style="margin-top:var(--space-2xl);">
+        <a href="{{ collection.url | default: routes.all_products_collection_url }}" class="btn btn--secondary">
+          {{ section.settings.button_label | default: 'View All Products' }}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "All Products Grid",
+  "class": "all-products-section",
+  "settings": [
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "Full Range" },
+    { "type": "text", "id": "title", "label": "Title", "default": "All Products" },
+    { "type": "textarea", "id": "description", "label": "Description", "default": "Every piece in our collection — premium embroidery, premium fabric, premium feel." },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "products_to_show", "label": "Products to Show", "min": 4, "max": 16, "step": 2, "default": 8 },
+    { "type": "select", "id": "columns", "label": "Columns", "options": [{"value":"2","label":"2"},{"value":"3","label":"3"},{"value":"4","label":"4"}], "default": "4" },
+    { "type": "checkbox", "id": "show_vendor", "label": "Show Vendor", "default": false },
+    { "type": "checkbox", "id": "show_view_all", "label": "Show View All Button", "default": true },
+    { "type": "text", "id": "button_label", "label": "Button Label", "default": "View All Products" }
+  ],
+  "presets": [{ "name": "All Products Grid" }]
+}
+{% endschema %}

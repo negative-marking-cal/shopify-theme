@@ -1,0 +1,261 @@
+{%- style -%}
+  .hero-slider { position: relative; overflow: hidden; }
+  .hero-slider__track { display: flex; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+  .hero-slider__slide {
+    min-width: 100%;
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-slider__slide--medium { min-height: 80vh; }
+  .hero-slider__media {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .hero-slider__media img,
+  .hero-slider__media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-slider__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.6) 100%);
+  }
+  .hero-slider__content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    padding: var(--space-xl) var(--page-gutter);
+    max-width: 800px;
+    color: #fff;
+  }
+  .hero-slider__subtitle {
+    font-size: var(--text-xs);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+    opacity: 0.85;
+  }
+  .hero-slider__title {
+    font-size: var(--text-3xl);
+    color: #fff;
+    margin-bottom: var(--space-lg);
+    line-height: 1.05;
+    font-weight: 300;
+  }
+  .hero-slider__description {
+    font-size: var(--text-md);
+    opacity: 0.8;
+    max-width: 520px;
+    margin: 0 auto var(--space-xl);
+    line-height: 1.8;
+  }
+  .hero-slider__actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .hero-slider__nav {
+    position: absolute;
+    bottom: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    display: flex;
+    gap: var(--space-sm);
+  }
+  .hero-slider__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+  }
+  .hero-slider__dot.is-active {
+    background: #fff;
+    transform: scale(1.3);
+  }
+  .hero-slider__arrows {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    z-index: 4;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 var(--space-lg);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .hero-slider__arrow {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: all;
+    transition: all 0.3s ease;
+  }
+  .hero-slider__arrow:hover {
+    background: rgba(255,255,255,0.3);
+  }
+  .hero-slider__arrow svg { width: 20px; height: 20px; }
+  @media (max-width: 749px) {
+    .hero-slider__slide { min-height: 85vh; min-height: 85svh; }
+    .hero-slider__title { font-size: var(--text-2xl); line-height: 1.1; }
+    .hero-slider__arrows { display: none; }
+    .hero-slider__actions .btn { width: 100%; }
+  }
+{%- endstyle -%}
+
+<section class="hero-slider" data-section-id="{{ section.id }}" data-hero-slider>
+  <div class="hero-slider__track" data-slider-track>
+    {%- for block in section.blocks -%}
+      <div class="hero-slider__slide" {{ block.shopify_attributes }}>
+        <div class="hero-slider__media">
+          {%- if block.settings.video != blank -%}
+            {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true }}
+          {%- elsif block.settings.image != blank -%}
+            <img
+              src="{{ block.settings.image | image_url: width: 1920 }}"
+              srcset="{{ block.settings.image | image_url: width: 750 }} 750w, {{ block.settings.image | image_url: width: 1200 }} 1200w, {{ block.settings.image | image_url: width: 1920 }} 1920w"
+              sizes="100vw"
+              alt="{{ block.settings.image.alt | escape | default: block.settings.title }}"
+              width="{{ block.settings.image.width }}"
+              height="{{ block.settings.image.height }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              {% if forloop.first %}fetchpriority="high"{% endif %}
+            >
+          {%- else -%}
+            {%- render 'placeholder-hero', index: forloop.index -%}
+          {%- endif -%}
+        </div>
+        <div class="hero-slider__overlay"></div>
+        <div class="hero-slider__content">
+          {%- if block.settings.subtitle != blank -%}
+            <p class="hero-slider__subtitle">{{ block.settings.subtitle }}</p>
+          {%- endif -%}
+          {%- if block.settings.title != blank -%}
+            <h2 class="hero-slider__title">{{ block.settings.title }}</h2>
+          {%- endif -%}
+          {%- if block.settings.description != blank -%}
+            <p class="hero-slider__description">{{ block.settings.description }}</p>
+          {%- endif -%}
+          {%- if block.settings.button_label != blank -%}
+            <div class="hero-slider__actions">
+              <a href="{{ block.settings.button_link }}" class="btn btn--white">{{ block.settings.button_label }}</a>
+              {%- if block.settings.button_label_2 != blank -%}
+                <a href="{{ block.settings.button_link_2 }}" class="btn btn--outline-white">{{ block.settings.button_label_2 }}</a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.blocks.size > 1 -%}
+    <div class="hero-slider__arrows">
+      <button class="hero-slider__arrow" data-slider-prev aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <button class="hero-slider__arrow" data-slider-next aria-label="Next slide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <div class="hero-slider__nav" data-slider-nav>
+      {%- for block in section.blocks -%}
+        <button class="hero-slider__dot{% if forloop.first %} is-active{% endif %}" data-slider-dot="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}"></button>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero Slider",
+  "class": "hero-slider-section",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay Speed (seconds)",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Background Image" },
+        { "type": "video", "id": "video", "label": "Background Video (optional)" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "New Collection" },
+        { "type": "textarea", "id": "title", "label": "Title", "default": "Where Art Meets Thread" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Premium computerized embroidery on handpicked fabrics." },
+        { "type": "text", "id": "button_label", "label": "Button Label", "default": "Shop Now" },
+        { "type": "url", "id": "button_link", "label": "Button Link" },
+        { "type": "text", "id": "button_label_2", "label": "Second Button Label" },
+        { "type": "url", "id": "button_link_2", "label": "Second Button Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Slider",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "subtitle": "New Collection 2025",
+            "title": "Where Art Meets Thread",
+            "description": "Premium computerized embroidery on handpicked fabrics. Each piece is a wearable work of art.",
+            "button_label": "Shop Collection",
+            "button_label_2": "Our Story"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "subtitle": "Crafted With Precision",
+            "title": "1,000 Stitches Per Minute",
+            "description": "Computerized precision meets artisan design. Experience embroidery like never before.",
+            "button_label": "Explore T-Shirts"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "subtitle": "Limited Edition",
+            "title": "The Art Collection",
+            "description": "Hand-drawn designs transformed into thread. Only 50 pieces per design.",
+            "button_label": "Shop Limited",
+            "button_label_2": "View Lookbook"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
